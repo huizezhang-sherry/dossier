@@ -5,6 +5,9 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/huizezhang-sherry/dossier/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/huizezhang-sherry/dossier/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/huizezhang-sherry/dossier/graph/badge.svg)](https://app.codecov.io/gh/huizezhang-sherry/dossier)
 <!-- badges: end -->
 
 The goal of dossier is to …
