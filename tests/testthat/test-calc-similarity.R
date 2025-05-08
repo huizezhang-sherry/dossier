@@ -73,23 +73,14 @@
 #   )
 #
 #
-# (cols_all <- raw_df |>
-#     count(variable, type, sort = TRUE) |>
-#     filter(variable != "model"))
-# (trans_cols <- cols_all|> filter(n >= 10))
-# (good_ids <- trans_cols |>
-#     transmute(id = paste0(variable, "_", type)) |>
-#     pull(id))
-#
-#
-# paper_df <- to_decision_wide_l2(raw_df, good_ids)
-# paper_long <- to_decision_long(raw_df)
-# paper_decisions_binary(raw_df, good_ids)
-# count_summary <- count_paper_decisions(raw_df, good_ids)
-#
-# (good_papers <- count_summary |> filter(count >= 3) |> pull(paper))
-# paper_df <- paper_df |> filter(paper %in% good_papers)
+# count_variable_type(raw_df)
+# df <- raw_df |> filter_variable_type(n = 6)
+# # pivot_variable_wider(df)
+# # summarize_variable_binary(df_wide)
+# # summarize_num_decisions_pp(df_wide)
+# df_wide <- pivot_decision_wider(df)
+# paper_df <- df_wide |> slice_papers(n_paper = 10)
 #
 # embed_df <- paper_df |> compute_text_embed()
-# distance_item_df <- calc_item_similarity(paper_df, embed = embed_df)
+# distance_item_df <- calc_decision_similarity(paper_df, embed = embed_df)
 # distance_df <- distance_item_df |> calc_paper_similarity()

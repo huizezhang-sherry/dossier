@@ -1,0 +1,27 @@
+template:
+  params:
+    bootswatch: cosmo
+
+reference:
+- title: "Query and clean LLM"
+  desc: >
+    ...
+  contents:
+   - summarize_pdf
+   - clean_md
+- title: "Calculate paper similarity"
+  desc: >
+    ...
+  contents:
+   - calc_decision_similarity
+- title: "Diagnostics and summaries"
+  desc: >
+    ...
+  contents:
+   - summarize_num_decisions_pp
+   - diag_decision_ppp
+- title: "Table reshaping"
+  desc: >
+    ...
+  contents:
+   - pivot_decision_wider

@@ -1,102 +1,3 @@
-#' Convert decision data to wide format
-#'
-#' @param df A data frame.
-#' @param items A character vector of item identifiers to filter on.
-#'
-#' @returns
-#' A data frame in wide format with decisions split across columns.
-#'
-#' @export
-#' @rdname decision-table
-to_decision_wide_l2 <- function(df, items){
-  df |>
-    #dplyr::distinct(paper, model, variable, method, parameter, type, reason, decision) |>
-    dplyr::mutate(id = paste0(variable, "_", type)) |>
-    dplyr::filter(id %in% items) |>
-    tidyr::pivot_wider(id_cols = -c(parameter, id),
-                       names_from =  c(variable, type),
-                       names_glue = "{variable}_{type}_{.value}",
-                       names_vary = "slowest",
-                       values_from = c(method, reason, decision)) |>
-    dplyr::select(-paste0(items[grepl("spatial|temporal", items)], "_method"))
-}
-
-#' @export
-#' @rdname decision-table
-to_decision_wide_l1 <- function(df, items){
-  df |>
-    dplyr::mutate(id = paste0(variable, "_", type)) |>
-    dplyr::filter(id %in% items) |>
-    dplyr::mutate(a = paste0(reason, decision)) |>
-    tidyr::pivot_wider(
-      id_cols = -c(parameter, id, reason, decision, method),
-      names_from = c(variable, type),
-      names_glue = "{variable}_{type}",
-      names_vary = "slowest",
-      values_from = c(a)
-    )
-}
-
-#' Convert decisions to long format
-#'
-#' @param df A data frame containing columns 'paper', 'model', and additional columns to pivot.
-#'
-#' @returns
-#' A tibble in long format with columns 'paper', 'model', 'item', 'reason', and 'id'.
-#'
-#' @export
-#' @rdname decision-table
-to_decision_long <- function(df){
-  df |>
-    tidyr::pivot_longer(-c(paper, model), names_to = "item", values_to = "reason") |>
-    tidyr::unnest(reason) |>
-    dplyr::filter(!is.na(reason)) |>
-    dplyr::mutate(id = dplyr::row_number())
-}
-
-#' @rdname decision-table
-paper_decisions_binary <- function(df, items){
- to_decision_wide_l1(df, items) |>
-    dplyr::rowwise() |>
-    dplyr::mutate(dplyr::across(items, ~ifelse(is.na(.x), 0, 1))) |>
-    dplyr::ungroup()
-}
-
-
-#' Count paper decisions
-#'
-#' @param df A data frame.
-#' @param items A vector of column names.
-#' @param sort Optional. A logical indicating whether to sort by count in descending order.
-#'
-#' @returns
-#' A data frame with columns 'paper' and 'count'.
-#'
-#' @export
-count_paper_decisions <- function(df, items, sort = TRUE){
-  res <- paper_decisions_binary(df, items) |>
-    dplyr::transmute(paper, count = rowSums(dplyr::across(items)))
-
-  if (sort) res <- res |> arrange(-count)
-  return(res)
-}
-
-pairwise_paper_df <- function(df, paper_cols, colnames = c("paper1", "paper2")){
-
-  vec <- lapply(paper_cols, function(x) df[[x]])[[1]] |> c() |> unique()
-  res <- vec |> unique() |> utils::combn(2) |> t() |> tibble::as_tibble()
-
-  if (length(colnames) != 2){
-    cli::cli_abort("The {.arg colnames} argument must have length 2, not {length(colnames)}.")
-  }
-  colnames(res) <- colnames
-  return(res)
-}
-
-
-
-
-
 #' Calculate item similarity
 #'
 #' @param df A data frame.
@@ -109,15 +10,15 @@ pairwise_paper_df <- function(df, paper_cols, colnames = c("paper1", "paper2")){
 #'
 #' @export
 #' @rdname calc-similarity
-calc_item_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased", ...){
-  long_df <- to_decision_long(df)
+calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased", ...){
+  long_df <- pivot_decision_longer(df)
 
   if (is.null(embed)) {
     embed <- text::textEmbed(long_df$reason, model = text_model, ...)
     }
-  res_df <- pairwise_paper_df(df, "paper")
+  res_df <- gen_pairwise_paper_grid(df, "paper")
   res_df <- mapply(
-    function(x, y) item_similarity_workhorse(x, y, long_df, embed),
+    function(x, y) decision_similarity_workhorse(x, y, long_df, embed),
     res_df[["paper1"]], res_df[["paper2"]] , SIMPLIFY = FALSE
     )
 
@@ -128,14 +29,14 @@ calc_item_similarity <- function(df, embed = NULL, text_model = "bert-base-uncas
 #' @export
 #' @rdname calc-similarity
 compute_text_embed <- function(df, text_model ="bert-base-uncased", ...){
-  long_df <- to_decision_long(df)
+  long_df <- pivot_decision_longer(df)
   embed <- text::textEmbed(long_df$reason, model = text_model, ...)
   return(embed)
 }
 
 
 #' @keywords internal
-item_similarity_workhorse <- function(paper1, paper2, long_df, embed){
+decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
     aa_split <- long_df |>
       dplyr::filter(paper %in% c(paper1, paper2)) |>
       dplyr::group_split(item)
@@ -208,14 +109,15 @@ process_reason_others <- function(df, embed){
 #' `paper2`, and `dist`. Papers with no comparison data are assigned a distance of 1.
 #'
 #' @export
+#' @rdname calc-similarity
 calc_paper_similarity <- function(res, .f = mean) {
   comparison_long <- res |>
-    group_by(paper1, paper2) |>
-    summarise(dist = 1 - do.call(.f, list(dist))) |>
-    ungroup()
+    dplyr::group_by(paper1, paper2) |>
+    dplyr::summarise(dist = 1 - do.call(.f, list(dist))) |>
+    dplyr::ungroup()
 
   papers <- as.vector(unique(c(res$paper1, res$paper2)))
-  pairwise_paper_df(distance_item_df, paper_cols = c("paper1", "paper2")) |>
+  gen_pairwise_paper_grid(distance_item_df, paper_cols = c("paper1", "paper2")) |>
     dplyr::mutate(id = paste0(paper1, "-", paper2)) |>
     dplyr::left_join(comparison_long |>
                        mutate(id = paste0(paper1, "-", paper2)) |>
@@ -229,10 +131,33 @@ calc_paper_similarity <- function(res, .f = mean) {
            paper1 = factor(paper1, levels = papers),
            paper2 = factor(paper2, levels = papers)
     ) |>
-    dplyr::select(-c(id, dist.x, dist.y))
+    dplyr::select(-c(id, dist.x, dist.y)) |>
+    dplyr::mutate(similarity = 1 - dist)
 }
+
+#' Convert distance vector to distance matrix
+#'
+#' @param distance_df A data frame containing a `dist` column.
+#' @param paper_df A data frame containing a `paper` column.
+#'
+#' @returns
+#' A distance matrix of class `"dist"` with labels from `paper_df$paper`.
+#'
+#' @export
+to_dist_mtx <- function(distance_df, paper_df){
+  dist_m <- dist_df$dist
+  papers <- paper_df$paper
+  class(dist_m) <- "dist"
+  attr(dist_m, "Size") <- length(papers)
+  attr(dist_m, "Labels") <- papers
+  attr(dist_m, "Dia") <- FALSE
+  attr(dist_m, "Upper") <- FALSE
+  dist_m
+}
+
 
 globalVariables(c("paper", "model", "variable", "method", "parameter",
                   "type", "reason", "decision", "id", "paper1", "paper2",
                   "dist", "id2", "dist.x", "dist.y", "item", "embed_df",
-                  "distance_item_df", "count", "a"))
+                  "distance_item_df", "count", "a", "variable_type",
+                  "n", "df", "nn", "ave_similarity_score_df", "dist_df"))
