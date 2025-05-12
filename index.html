@@ -129,18 +129,18 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate the text embed</span></span>
 <span><span class="va">embed_df</span> <span class="op">&lt;-</span> <span class="va">paper_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">compute_text_embed</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Processing batch 1/1</span></span></span>
-<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 2.988611 secs).</span></span></span>
-<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers aggregation for word_type_embeddings. </span></span></span>
-<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.043239 secs).</span></span></span>
-<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.187906 secs).</span></span></span>
-<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.125</span></span></span>
-<span><span class="co">#&gt; <span style="color: #000000;">Estimated embedding time left = 0 minutes</span></span></span>
+<span><span class="co">#&gt; [0;34mProcessing batch 1/1</span></span>
+<span><span class="co">#&gt; [0m</span></span>
+<span><span class="co">#&gt; [0;32mCompleted layers output for texts (variable: 1/1, duration: 2.988611 secs).</span></span>
+<span><span class="co">#&gt; [0m</span></span>
+<span><span class="co">#&gt; [0;32mCompleted layers aggregation for word_type_embeddings. </span></span>
+<span><span class="co">#&gt; [0m</span></span>
+<span><span class="co">#&gt; [0;34mCompleted layers aggregation (variable 1/1, duration: 2.043239 secs).</span></span>
+<span><span class="co">#&gt; [0m</span></span>
+<span><span class="co">#&gt; [0;34mCompleted layers aggregation (variable 1/1, duration: 2.187906 secs).</span></span>
+<span><span class="co">#&gt; [0m</span></span>
+<span><span class="co">#&gt; [0;32mMinutes from start:  0.125[0m</span></span>
+<span><span class="co">#&gt; [0;30mEstimated embedding time left = 0 minutes[0m</span></span>
 <span><span class="co"># calculate decision similarity</span></span>
 <span><span class="op">(</span><span class="va">distance_item_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc-similarity.html">calc_decision_similarity</a></span><span class="op">(</span><span class="va">paper_df</span>, embed <span class="op">=</span> <span class="va">embed_df</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 74 × 4</span></span>
