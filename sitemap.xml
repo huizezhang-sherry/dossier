@@ -5,12 +5,13 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/reference/calc-similarity.html</loc></url>
-<url><loc>/reference/calc_paper_similarity.html</loc></url>
 <url><loc>/reference/clean_md.html</loc></url>
-<url><loc>/reference/count_paper_decisions.html</loc></url>
 <url><loc>/reference/decision-table.html</loc></url>
+<url><loc>/reference/diagnose.html</loc></url>
 <url><loc>/reference/dossier-package.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
 <url><loc>/reference/llm.html</loc></url>
+<url><loc>/reference/summarize.html</loc></url>
+<url><loc>/reference/to_dist_mtx.html</loc></url>
 </urlset>
 
