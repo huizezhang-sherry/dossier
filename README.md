@@ -82,18 +82,18 @@ paper_df <- pivot_decision_wider(df) |> filter(paper %in% good_papers$paper)
 ``` r
 # calculate the text embed
 embed_df <- paper_df |> compute_text_embed()
-#> [0;34mProcessing batch 1/1
-#> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 2.988611 secs).
-#> [0m
-#> [0;32mCompleted layers aggregation for word_type_embeddings. 
-#> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.043239 secs).
-#> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.187906 secs).
-#> [0m
-#> [0;32mMinutes from start:  0.125[0m
-#> [0;30mEstimated embedding time left = 0 minutes[0m
+#> [0;34mProcessing batch 1/1
+#> [0m
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 2.988611 secs).
+#> [0m
+#> [0;32mCompleted layers aggregation for word_type_embeddings. 
+#> [0m
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.043239 secs).
+#> [0m
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.187906 secs).
+#> [0m
+#> [0;32mMinutes from start:  0.125[0m
+#> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_item_df <- calc_decision_similarity(paper_df, embed = embed_df))
 #> # A tibble: 74 × 4
