@@ -91,7 +91,6 @@ pivot_decision_longer <- function(df){
 #' @rdname summarize
 summarize_variable_binary <- function(df_wide){
   # only take wide format for now
-
   df_wide |>
     dplyr::rowwise() |>
     dplyr::mutate(dplyr::across(colnames(df_wide)[-c(1,2)], ~ifelse(is.na(.x), 0, 1))) |>
@@ -158,8 +157,8 @@ filter_variable_type <- function(df, n = NULL, n_value = NULL){
 #' @keywords internal
 gen_pairwise_paper_grid <- function(df, paper_cols, colnames = c("paper1", "paper2")){
 
-  vec <- lapply(paper_cols, function(x) df[[x]])[[1]] |> c() |> unique()
-  res <- vec |> unique() |> utils::combn(2) |> t() |> tibble::as_tibble()
+  vec <- unname(sapply(paper_cols, function(col) unique(as.character(df[[col]])), simplify = TRUE))
+  res <- c(vec) |> unique() |> utils::combn(2) |> t() |> tibble::as_tibble(.name_repair = "minimal")
 
   if (length(colnames) != 2){
     cli::cli_abort("The {.arg colnames} argument must have length 2, not {length(colnames)}.")

@@ -6,7 +6,7 @@
 #' [clean_md] to extract the decisions from the JSON block.
 #'
 #' @param prompt_file A single string containing the prompt
-#' @param pdf_file A single string specifying the path to a PDF file
+#' @param pdf A single string specifying the path to a PDF file
 #' @param file A single string specifying where to save the output. By default,
 #' it saves a markdown file with the same name as the PDF file in the same directory.
 #' @param llm_model One of `"claude"` or `"gemini"` for processing pdf documents. Default to `"claude"`
@@ -17,7 +17,8 @@
 #' @export
 #' @rdname llm
 #' @seealso [clean_md]
-summarize_pdf <- function(prompt_file, pdf_file, file = NULL, llm_model = "claude"){
+summarize_pdf <- function(prompt_file, pdf, file = NULL, llm_model = "claude"){
+  prompt <- ellmer::interpolate_file(prompt_file)
 
   if (llm_model == "claude") {
     chat <- ellmer::chat_claude()
@@ -27,10 +28,15 @@ summarize_pdf <- function(prompt_file, pdf_file, file = NULL, llm_model = "claud
     stop("Unsupported LLM model. Please use 'claude' or 'gemini'.")
   }
 
-  if (is.null(file)) file <- paste0(tools::file_path_sans_ext(pdf_file), ".md")
-  prompt <- ellmer::interpolate_file(prompt_file)
-  result <- chat$chat(prompt, ellmer::content_pdf_file(pdf_file))
-  writeLines(result, con = file)
+  if (is.null(file)) {
+    file <- paste0(tools::file_path_sans_ext(pdf), ".md")
+  }
+
+  writeLines(
+    chat$chat(prompt_file, ellmer::content_pdf_file(pdf)),
+    con = file
+  )
+
 }
 
 #' @rdname llm

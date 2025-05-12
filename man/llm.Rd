@@ -5,14 +5,14 @@
 \alias{summarise_pdf}
 \title{Summarize PDF via LLM}
 \usage{
-summarize_pdf(prompt_file, pdf_file, file = NULL, llm_model = "claude")
+summarize_pdf(prompt_file, pdf, file = NULL, llm_model = "claude")
 
-summarise_pdf(prompt_file, pdf_file, file = NULL, llm_model = "claude")
+summarise_pdf(prompt_file, pdf, file = NULL, llm_model = "claude")
 }
 \arguments{
 \item{prompt_file}{A single string containing the prompt}
 
-\item{pdf_file}{A single string specifying the path to a PDF file}
+\item{pdf}{A single string specifying the path to a PDF file}
 
 \item{file}{A single string specifying where to save the output. By default,
 it saves a markdown file with the same name as the PDF file in the same directory.}

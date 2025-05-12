@@ -3,18 +3,17 @@
 #' @param df A data frame.
 #' @param embed Optional. A text embedding.
 #' @param text_model A text model.
-#' @param ... Additional arguments passed to `text::textEmbed()`.
 #'
 #' @returns
 #' A list of similarity scores between pairs of items.
 #'
 #' @export
 #' @rdname calc-similarity
-calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased", ...){
+calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased"){
   long_df <- pivot_decision_longer(df)
 
   if (is.null(embed)) {
-    embed <- text::textEmbed(long_df$reason, model = text_model, ...)
+    embed <- text::textEmbed(long_df$reason, model = text_model)
     }
   res_df <- gen_pairwise_paper_grid(df, "paper")
   res_df <- mapply(
@@ -28,9 +27,9 @@ calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-u
 
 #' @export
 #' @rdname calc-similarity
-compute_text_embed <- function(df, text_model ="bert-base-uncased", ...){
+compute_text_embed <- function(df, text_model ="bert-base-uncased"){
   long_df <- pivot_decision_longer(df)
-  embed <- text::textEmbed(long_df$reason, model = text_model, ...)
+  embed <- text::textEmbed(long_df$reason, model = text_model)
   return(embed)
 }
 
@@ -57,8 +56,8 @@ decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
       matched
     })
 
-    res1 <- process_reasons(df = aa_df[which(type == "method")], type = "method", embed = embed_df)
-    res2 <- process_reasons(df = aa_df[which(type != "method")], type = "others", embed = embed_df)
+    res1 <- process_reasons(df = aa_df[which(type == "method")], type = "method", embed = embed)
+    res2 <- process_reasons(df = aa_df[which(type != "method")], type = "others", embed = embed)
     res <- dplyr::bind_rows(res1, res2)
     if (nrow(res) == 0) res <- tibble(id1 = NA, id2 = NA, dist = NA)
 
@@ -117,7 +116,7 @@ calc_paper_similarity <- function(res, .f = mean) {
     dplyr::ungroup()
 
   papers <- as.vector(unique(c(res$paper1, res$paper2)))
-  gen_pairwise_paper_grid(distance_item_df, paper_cols = c("paper1", "paper2")) |>
+  gen_pairwise_paper_grid(res, paper_cols = c("paper1", "paper2")) |>
     dplyr::mutate(id = paste0(paper1, "-", paper2)) |>
     dplyr::left_join(comparison_long |>
                        mutate(id = paste0(paper1, "-", paper2)) |>
@@ -135,18 +134,20 @@ calc_paper_similarity <- function(res, .f = mean) {
     dplyr::mutate(similarity = 1 - dist)
 }
 
-#' Convert distance vector to distance matrix
+
+#' Convert a dataframe to a distance matrix
 #'
-#' @param distance_df A data frame containing a `dist` column.
-#' @param paper_df A data frame containing a `paper` column.
+#' @param df A dataframe.
+#' @param paper_cols Optional. A character vector of length 2 specifying the column names for the papers being compared. Default is `c("paper1", "paper2")`.
 #'
 #' @returns
-#' A distance matrix of class `"dist"` with labels from `paper_df$paper`.
+#' A distance matrix object of class `"dist"`.
 #'
 #' @export
-to_dist_mtx <- function(distance_df, paper_df){
-  dist_m <- dist_df$dist
-  papers <- paper_df$paper
+to_dist_mtx <- function(df, paper_cols = c("paper1", "paper2")){
+  papers <- unname(sapply(paper_cols, function(col) unique(as.character(df[[col]])), simplify = TRUE))
+  papers <- c(papers[,1], utils::tail(papers[,2], 1))
+  dist_m <- df$dist
   class(dist_m) <- "dist"
   attr(dist_m, "Size") <- length(papers)
   attr(dist_m, "Labels") <- papers

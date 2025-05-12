@@ -6,14 +6,9 @@
 \alias{calc_paper_similarity}
 \title{Calculate item similarity}
 \usage{
-calc_decision_similarity(
-  df,
-  embed = NULL,
-  text_model = "bert-base-uncased",
-  ...
-)
+calc_decision_similarity(df, embed = NULL, text_model = "bert-base-uncased")
 
-compute_text_embed(df, text_model = "bert-base-uncased", ...)
+compute_text_embed(df, text_model = "bert-base-uncased")
 
 calc_paper_similarity(res, .f = mean)
 }
@@ -23,8 +18,6 @@ calc_paper_similarity(res, .f = mean)
 \item{embed}{Optional. A text embedding.}
 
 \item{text_model}{A text model.}
-
-\item{...}{Additional arguments passed to `text::textEmbed()`.}
 
 \item{res}{A data frame containing paper comparison results with columns `paper1`, `paper2`, and `dist`.}
 

@@ -71,17 +71,120 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of dossier like so:</p>
+<p>You can install the released version of cubble from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"dossier"</span><span class="op">)</span></span></code></pre></div>
+<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"huizezhang-sherry/dossier"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#library(dossier)</span></span>
-<span><span class="co">## basic example code</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/huizezhang-sherry/dossier" class="external-link">dossier</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-text.org/" class="external-link">text</a></span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">raw_df</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"papers.csv"</span>, package <span class="op">=</span> <span class="st">"dossier"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 35 × 8</span></span>
+<span><span class="co">#&gt;    paper       variable            type   model method parameter reason decision</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 braga       barometric_pressure param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  2 braga       barometric_pressure spati… gene… &lt;NA&gt;   &lt;NA&gt;      to al… chosen …</span></span>
+<span><span class="co">#&gt;  3 braga       humidity            param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  4 braga       humidity            spati… gene… &lt;NA&gt;   &lt;NA&gt;      to al… chosen …</span></span>
+<span><span class="co">#&gt;  5 braga       temperature         param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  6 braga       temperature         spati… gene… &lt;NA&gt;   &lt;NA&gt;      to al… chosen …</span></span>
+<span><span class="co">#&gt;  7 braga       time                param… gene… LOESS  smoothin… to el… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  8 braga       time                spati… gene… &lt;NA&gt;   &lt;NA&gt;      seaso… chosen …</span></span>
+<span><span class="co">#&gt;  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt; 10 katsouyanni humidity            tempo… gene… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
+<span><span class="co">#&gt; # ℹ 25 more rows</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># select the variable-type pair to compare papers</span></span>
+<span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 11 × 3</span></span>
+<span><span class="co">#&gt;    variable            type          n</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;               &lt;chr&gt;     &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1 temperature         parameter     6</span></span>
+<span><span class="co">#&gt;  2 time                parameter     6</span></span>
+<span><span class="co">#&gt;  3 humidity            parameter     4</span></span>
+<span><span class="co">#&gt;  4 temperature         temporal      4</span></span>
+<span><span class="co">#&gt;  5 PM                  temporal      3</span></span>
+<span><span class="co">#&gt;  6 humidity            temporal      3</span></span>
+<span><span class="co">#&gt;  7 time                spatial       2</span></span>
+<span><span class="co">#&gt;  8 barometric_pressure parameter     1</span></span>
+<span><span class="co">#&gt;  9 barometric_pressure spatial       1</span></span>
+<span><span class="co">#&gt; 10 humidity            spatial       1</span></span>
+<span><span class="co">#&gt; 11 temperature         spatial       1</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">raw_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_variable_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
+<span></span>
+<span><span class="co"># subset to papers with at least 3 decisions</span></span>
+<span><span class="va">good_papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/decision-table.html">pivot_variable_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">slice_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># final data frame to compare</span></span>
+<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/decision-table.html">pivot_decision_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">paper</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">good_papers</span><span class="op">$</span><span class="va">paper</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># calculate the text embed</span></span>
+<span><span class="va">embed_df</span> <span class="op">&lt;-</span> <span class="va">paper_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">compute_text_embed</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Processing batch 1/1</span></span></span>
+<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 2.988611 secs).</span></span></span>
+<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers aggregation for word_type_embeddings. </span></span></span>
+<span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.043239 secs).</span></span></span>
+<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.187906 secs).</span></span></span>
+<span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.125</span></span></span>
+<span><span class="co">#&gt; <span style="color: #000000;">Estimated embedding time left = 0 minutes</span></span></span>
+<span><span class="co"># calculate decision similarity</span></span>
+<span><span class="op">(</span><span class="va">distance_item_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc-similarity.html">calc_decision_similarity</a></span><span class="op">(</span><span class="va">paper_df</span>, embed <span class="op">=</span> <span class="va">embed_df</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 74 × 4</span></span>
+<span><span class="co">#&gt;    paper1 paper2      item                          dist</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;                        &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 braga  katsouyanni humidity_parameter_method    1    </span></span>
+<span><span class="co">#&gt;  2 braga  katsouyanni temperature_parameter_method 1    </span></span>
+<span><span class="co">#&gt;  3 braga  katsouyanni time_parameter_method        1    </span></span>
+<span><span class="co">#&gt;  4 braga  katsouyanni humidity_parameter_reason    0.946</span></span>
+<span><span class="co">#&gt;  5 braga  katsouyanni temperature_parameter_reason 0.946</span></span>
+<span><span class="co">#&gt;  6 braga  katsouyanni time_parameter_reason        0.760</span></span>
+<span><span class="co">#&gt;  7 braga  ostro       humidity_parameter_method    0    </span></span>
+<span><span class="co">#&gt;  8 braga  ostro       temperature_parameter_method 0    </span></span>
+<span><span class="co">#&gt;  9 braga  ostro       time_parameter_method        0    </span></span>
+<span><span class="co">#&gt; 10 braga  ostro       time_parameter_reason        0.728</span></span>
+<span><span class="co">#&gt; # ℹ 64 more rows</span></span>
+<span><span class="co"># aggregate from decision similarity to paper similarity</span></span>
+<span><span class="op">(</span><span class="va">distance_df</span> <span class="op">&lt;-</span> <span class="va">distance_item_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">calc_paper_similarity</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 15 × 4</span></span>
+<span><span class="co">#&gt;    paper1      paper2        dist similarity</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt;       &lt;fct&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 braga       katsouyanni 0.0578      0.942</span></span>
+<span><span class="co">#&gt;  2 braga       ostro       0.818       0.182</span></span>
+<span><span class="co">#&gt;  3 braga       peel        1           0    </span></span>
+<span><span class="co">#&gt;  4 braga       schwartz    0.101       0.899</span></span>
+<span><span class="co">#&gt;  5 braga       zanobetti   0.0546      0.945</span></span>
+<span><span class="co">#&gt;  6 katsouyanni ostro       0.627       0.373</span></span>
+<span><span class="co">#&gt;  7 katsouyanni peel        0.786       0.214</span></span>
+<span><span class="co">#&gt;  8 katsouyanni schwartz    0.140       0.860</span></span>
+<span><span class="co">#&gt;  9 katsouyanni zanobetti   0.0799      0.920</span></span>
+<span><span class="co">#&gt; 10 ostro       peel        0.545       0.455</span></span>
+<span><span class="co">#&gt; 11 ostro       schwartz    0.565       0.435</span></span>
+<span><span class="co">#&gt; 12 ostro       zanobetti   0.686       0.314</span></span>
+<span><span class="co">#&gt; 13 peel        schwartz    0.633       0.367</span></span>
+<span><span class="co">#&gt; 14 peel        zanobetti   0.825       0.175</span></span>
+<span><span class="co">#&gt; 15 schwartz    zanobetti   0.143       0.857</span></span>
+<span><span class="co"># turn into a standard distance matrix</span></span>
+<span><span class="fu"><a href="reference/to_dist_mtx.html">to_dist_mtx</a></span><span class="op">(</span><span class="va">distance_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  braga katsouyanni      ostro       peel   schwartz</span></span>
+<span><span class="co">#&gt; katsouyanni 0.05780111                                             </span></span>
+<span><span class="co">#&gt; ostro       0.81790385  0.62691960                                 </span></span>
+<span><span class="co">#&gt; peel        1.00000000  0.78588531 0.54474610                      </span></span>
+<span><span class="co">#&gt; schwartz    0.10146916  0.14029528 0.56474610 0.63310631           </span></span>
+<span><span class="co">#&gt; zanobetti   0.05464868  0.07994514 0.68598039 0.82538338 0.14305712</span></span></code></pre></div>
 </div>
 </div>
   </div>

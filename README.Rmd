@@ -24,19 +24,52 @@ The goal of dossier is to ...
 
 ## Installation
 
-You can install the development version of dossier like so:
+You can install the released version of cubble from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+install.packages("dossier")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("huizezhang-sherry/dossier")
 ```
 
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
-#library(dossier)
-## basic example code
+```{r example, message=FALSE}
+library(dossier)
+library(dplyr)
+library(text)
+(raw_df <- readr::read_csv(system.file("papers.csv", package = "dossier")))
+```
+ 
+```{r}
+# select the variable-type pair to compare papers
+count_variable_type(raw_df)
+df <- raw_df |> filter_variable_type(n = 6) # first 6 variable-type pairs
+
+# subset to papers with at least 3 decisions
+good_papers <- pivot_variable_wider(df) |> slice_papers(n_count = 3)
+
+# final data frame to compare
+paper_df <- pivot_decision_wider(df) |> filter(paper %in% good_papers$paper)
 ```
 
- 
+
+
+```{r}
+# calculate the text embed
+embed_df <- paper_df |> compute_text_embed()
+# calculate decision similarity
+(distance_item_df <- calc_decision_similarity(paper_df, embed = embed_df))
+# aggregate from decision similarity to paper similarity
+(distance_df <- distance_item_df |> calc_paper_similarity())
+# turn into a standard distance matrix
+to_dist_mtx(distance_df)
+```
+

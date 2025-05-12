@@ -1,0 +1,36 @@
+paper,variable,type,model,method,parameter,reason,decision
+braga,barometric_pressure,parameter,generalized additive Poisson regression,LOESS,smoothing window,to minimize Akaike's Information Criteria,NA
+braga,barometric_pressure,spatial,generalized additive Poisson regression,NA,NA,to allow for city-specific differences,chosen separately in each location
+braga,humidity,parameter,generalized additive Poisson regression,LOESS,smoothing window,to minimize Akaike's Information Criteria,NA
+braga,humidity,spatial,generalized additive Poisson regression,NA,NA,to allow for city-specific differences,chosen separately in each location
+braga,temperature,parameter,generalized additive Poisson regression,LOESS,smoothing window,to minimize Akaike's Information Criteria,NA
+braga,temperature,spatial,generalized additive Poisson regression,NA,NA,to allow for city-specific differences,chosen separately in each location
+braga,time,parameter,generalized additive Poisson regression,LOESS,smoothing window,to eliminate seasonal patterns in the residuals and reduce residuals to white noise,NA
+braga,time,spatial,generalized additive Poisson regression,NA,NA,seasonal patterns vary greatly between cities,chosen separately for each location
+katsouyanni,humidity,parameter,generalized additive models,LOESS,smoothing window,to minimize Akaike's Information Criterion,NA
+katsouyanni,humidity,temporal,generalized additive models,NA,NA,NA,same day and lags up to 2 days or averaged over 0-2 days
+katsouyanni,temperature,parameter,generalized additive models,LOESS,smoothing window,to minimize Akaike's Information Criterion,NA
+katsouyanni,temperature,temporal,generalized additive models,NA,NA,NA,same day and lags up to 2 days or averaged over 0-2 days
+katsouyanni,time,parameter,generalized additive models,LOESS,smoothing window,to minimize Akaike's Information Criterion,NA
+katsouyanni,time,spatial,generalized additive models,NA,NA,used separately for each city,calculated separately per city
+ostro,PM,temporal,Poisson regression,NA,NA,previous studies reported stronger associations with lagged or cumulative exposures,2-day average of lag 0 and 1 (lag 01) and single-day lag of 2 days (lag 2)
+ostro,humidity,parameter,Poisson regression,smoothing spline,smoothing parameter,NA,3 
+ostro,humidity,temporal,Poisson regression,NA,NA,NA,1-day lag
+ostro,model,spatial,Poisson regression,NA,NA,NA,similar model specifications for each city
+ostro,temperature,parameter,Poisson regression,smoothing spline,smoothing parameter,NA,3 
+ostro,temperature,temporal,Poisson regression,NA,NA,NA,1-day lag
+ostro,time,parameter,Poisson regression,smoothing spline,smoothing parameter,"@samet2000fine , spike in mortality during Dec 1999","7  per year , 3 knots for 3-week period"
+peel,PM,temporal,Poisson generalized estimating equations,NA,NA,NA,"lags 0, 1, and 2 days"
+peel,temperature,parameter,Poisson generalized estimating equations,natural spline,knots,NA,at 25th and 75th percentiles
+peel,temperature,temporal,Poisson generalized estimating equations,NA,NA,NA,"lags 0, 1, and 2"
+peel,time,parameter,Poisson generalized estimating equations,natural spline,knots,NA,monthly knots
+schwartz,PM,temporal,Poisson regression,NA,NA,based on previous observations,mean of non-missing concentrations on same and previous day
+schwartz,model,spatial,Poisson regression,NA,NA,temporal and weather dependence of mortality may vary among cities,separate regression models fit in each area
+schwartz,temperature,parameter,Poisson regression,LOESS,smoothing window,expected dose-response relationship to be much smoother,50% of data
+schwartz,time,parameter,Poisson regression,LOESS,smoothing window,to ensure removal of all long wavelength patterns from the data,5% of data (about 100 days)
+zanobetti,humidity,parameter,generalized additive model,LOESS,smoothing window,to minimize Akaike's Information Criterion,NA
+zanobetti,humidity,temporal,generalized additive model,NA,NA,NA,previous day or up to 3 previous days or average of a few days
+zanobetti,model,spatial,generalized additive model,NA,NA,substantial variability in seasonal patterns and weather between cities,separate models built in each city
+zanobetti,temperature,parameter,generalized additive model,LOESS,smoothing window,to minimize Akaike's Information Criterion,NA
+zanobetti,temperature,temporal,generalized additive model,NA,NA,NA,previous day or up to 3 previous days or average of a few days
+zanobetti,time,parameter,generalized additive model,LOESS,smoothing window,to minimize the sum of the autocorrelation of the residuals,NA

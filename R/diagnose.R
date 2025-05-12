@@ -38,8 +38,6 @@ diag_decision_ppp <- function(item_df, distance_df){
 #'
 #' @export
 #' @rdname diagnose
-#' @export
-#' @rdname diagnose
 view_pairs <- function(paper_df, item_df, pp1, pp2){
   res <- paper_df |>
     dplyr::filter(paper %in% c(pp1, pp2)) |>

@@ -2,18 +2,18 @@
 % Please edit documentation in R/calc-similarity.R
 \name{to_dist_mtx}
 \alias{to_dist_mtx}
-\title{Convert distance vector to distance matrix}
+\title{Convert a dataframe to a distance matrix}
 \usage{
-to_dist_mtx(distance_df, paper_df)
+to_dist_mtx(df, paper_cols = c("paper1", "paper2"))
 }
 \arguments{
-\item{distance_df}{A data frame containing a `dist` column.}
+\item{df}{A dataframe.}
 
-\item{paper_df}{A data frame containing a `paper` column.}
+\item{paper_cols}{Optional. A character vector of length 2 specifying the column names for the papers being compared. Default is `c("paper1", "paper2")`.}
 }
 \value{
-A distance matrix of class `"dist"` with labels from `paper_df$paper`.
+A distance matrix object of class `"dist"`.
 }
 \description{
-Convert distance vector to distance matrix
+Convert a dataframe to a distance matrix
 }
