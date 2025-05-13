@@ -19,7 +19,12 @@ test_that("multiplication works", {
   expect_snapshot(tibble::tibble(paper = paper_vec) |> gen_pairwise_paper_grid("paper"))
 
   set.seed(123)
-  grid <- paper_vec |> combn(2) |> t() |>  tibble::as_tibble() |> dplyr::slice_sample(prop = 0.9) |> dplyr::arrange(V1, V2)
+  cols <- paper_vec |> combn(2) |> t()
+  colnames(cols) <- c("V1", "V2")
+  grid <- cols |>
+    tibble::as_tibble() |>
+    dplyr::slice_sample(prop = 0.9) |>
+    dplyr::arrange(V1, V2)
   expect_snapshot(grid |> gen_pairwise_paper_grid(paper_cols = c("V1", "V2")))
 })
 
