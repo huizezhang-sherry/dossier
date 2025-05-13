@@ -52,16 +52,16 @@ View the coding detail for a pair of papers"><!-- mathjax --><script src="https:
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">diag_decision_ppp</span><span class="op">(</span><span class="va">item_df</span>, <span class="va">distance_df</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">diag_decision_ppp</span><span class="op">(</span><span class="va">decision_df</span>, <span class="va">distance_df</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">view_pairs</span><span class="op">(</span><span class="va">paper_df</span>, <span class="va">item_df</span>, <span class="va">pp1</span>, <span class="va">pp2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">view_pairs</span><span class="op">(</span><span class="va">paper_df</span>, <span class="va">decision_df</span>, <span class="va">pp1</span>, <span class="va">pp2</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
 
 
-<dl><dt id="arg-item-df">item_df<a class="anchor" aria-label="anchor" href="#arg-item-df"></a></dt>
+<dl><dt id="arg-decision-df">decision_df<a class="anchor" aria-label="anchor" href="#arg-decision-df"></a></dt>
 <dd><p>A data frame containing item-level distances</p></dd>
 
 
@@ -81,8 +81,8 @@ View the coding detail for a pair of papers"><!-- mathjax --><script src="https:
     <h2>Value</h2>
     <p>Diagnostic summary of the count, proportion, and average similarity score
 for number of decisions per paper pair.</p>
-<p>Diagnostic summary of item score for each paper pair.</p>
-<p>A data frame containing item-level comparisons between the two papers.</p>
+<p>Diagnostic summary of decisions similarity score for each paper pair.</p>
+<p>A data frame containing decision-level comparisons between the two papers.</p>
     </div>
 
   </div>

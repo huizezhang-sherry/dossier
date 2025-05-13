@@ -6,6 +6,7 @@
 \alias{summarize_variable_binary}
 \alias{summarize_num_decisions_pp}
 \alias{slice_papers}
+\alias{summarize_decisions_ppp}
 \alias{filter_variable_type}
 \title{Summarize number of decisions per paper}
 \usage{
@@ -18,6 +19,8 @@ summarize_variable_binary(df_wide)
 summarize_num_decisions_pp(df_wide, sort = TRUE)
 
 slice_papers(df, n_paper = NULL, n_count = NULL)
+
+summarize_decisions_ppp(paper_df)
 
 filter_variable_type(df, n = NULL, n_value = NULL)
 }
@@ -35,6 +38,8 @@ filter_variable_type(df, n = NULL, n_value = NULL)
 \item{n_paper}{Optional. A numeric value.}
 
 \item{n_count}{Optional. A numeric value.}
+
+\item{paper_df}{A data frame containing paper codings}
 }
 \value{
 A data frame containing papers and their decision counts.

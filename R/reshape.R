@@ -81,7 +81,7 @@ create_good_variables <- function(df, n = NULL, n_value = NULL){
 #' @rdname decision-table
 pivot_decision_longer <- function(df){
   df |>
-    tidyr::pivot_longer(-c(paper, model), names_to = "item", values_to = "reason") |>
+    tidyr::pivot_longer(-c(paper, model), names_to = "decision", values_to = "reason") |>
     tidyr::unnest(reason) |>
     dplyr::filter(!is.na(reason)) |>
     dplyr::mutate(id = dplyr::row_number())
@@ -141,6 +141,21 @@ slice_papers <- function(df, n_paper = NULL, n_count = NULL){
 
   df |> dplyr::filter(paper %in% good_papers$paper)
 }
+
+#' @param paper_df A data frame containing paper codings
+#' @export
+#' @rdname summarize
+summarize_decisions_ppp <- function(paper_df){
+  df <- paper_df |> pivot_decision_longer()
+  gen_pairwise_paper_grid(paper_df, "paper") |>
+    dplyr::rowwise() |>
+    dplyr::mutate(pairs = length(intersect(
+      df |> dplyr::filter(paper == paper1) |> dplyr::pull(decision),
+      df |> dplyr::filter(paper == paper2) |> dplyr::pull(decision))
+      )) |>
+    dplyr::ungroup()
+}
+
 
 
 #' @export

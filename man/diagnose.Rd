@@ -5,12 +5,12 @@
 \alias{view_pairs}
 \title{Diagnose functions on paper similarity}
 \usage{
-diag_decision_ppp(item_df, distance_df)
+diag_decision_ppp(decision_df, distance_df)
 
-view_pairs(paper_df, item_df, pp1, pp2)
+view_pairs(paper_df, decision_df, pp1, pp2)
 }
 \arguments{
-\item{item_df}{A data frame containing item-level distances}
+\item{decision_df}{A data frame containing item-level distances}
 
 \item{distance_df}{A tibble with paper distance metrics.}
 
@@ -22,9 +22,9 @@ view_pairs(paper_df, item_df, pp1, pp2)
 Diagnostic summary of the count, proportion, and average similarity score
 for number of decisions per paper pair.
 
-Diagnostic summary of item score for each paper pair.
+Diagnostic summary of decisions similarity score for each paper pair.
 
-A data frame containing item-level comparisons between the two papers.
+A data frame containing decision-level comparisons between the two papers.
 }
 \description{
 Diagnose functions on paper similarity

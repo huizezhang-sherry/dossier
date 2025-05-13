@@ -73,6 +73,16 @@ count_variable_type(raw_df)
 df <- raw_df |> filter_variable_type(n = 6) # first 6 variable-type pairs
 
 # subset to papers with at least 3 decisions
+pivot_variable_wider(df) |> summarize_num_decisions_pp()
+#> # A tibble: 6 × 2
+#>   paper       count
+#>   <chr>       <dbl>
+#> 1 ostro           6
+#> 2 katsouyanni     5
+#> 3 zanobetti       5
+#> 4 peel            4
+#> 5 braga           3
+#> 6 schwartz        3
 good_papers <- pivot_variable_wider(df) |> slice_papers(n_count = 3)
 
 # final data frame to compare
@@ -80,24 +90,57 @@ paper_df <- pivot_decision_wider(df) |> filter(paper %in% good_papers$paper)
 ```
 
 ``` r
+summarize_decisions_ppp(paper_df)
+#> # A tibble: 15 × 3
+#>    paper1      paper2      pairs
+#>    <chr>       <chr>       <int>
+#>  1 braga       katsouyanni     6
+#>  2 braga       ostro           4
+#>  3 braga       peel            2
+#>  4 braga       schwartz        4
+#>  5 braga       zanobetti       6
+#>  6 katsouyanni ostro           6
+#>  7 katsouyanni peel            3
+#>  8 katsouyanni schwartz        4
+#>  9 katsouyanni zanobetti       8
+#> 10 ostro       peel            6
+#> 11 ostro       schwartz        7
+#> 12 ostro       zanobetti       6
+#> 13 peel        schwartz        5
+#> 14 peel        zanobetti       3
+#> 15 schwartz    zanobetti       4
+summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
+#> # A tibble: 7 × 2
+#>   pairs     n
+#>   <int> <int>
+#> 1     2     1
+#> 2     3     2
+#> 3     4     4
+#> 4     5     1
+#> 5     6     5
+#> 6     7     1
+#> 7     8     1
+```
+
+``` r
 # calculate the text embed
 embed_df <- paper_df |> compute_text_embed()
-#> [0;34mProcessing batch 1/1
-#> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 2.988611 secs).
-#> [0m
-#> [0;32mCompleted layers aggregation for word_type_embeddings. 
-#> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.043239 secs).
-#> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.187906 secs).
-#> [0m
-#> [0;32mMinutes from start:  0.125[0m
-#> [0;30mEstimated embedding time left = 0 minutes[0m
+#> [0;34mProcessing batch 1/1
+#> [0m
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.091134 secs).
+#> [0m
+#> [0;32mCompleted layers aggregation for word_type_embeddings. 
+#> [0m
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.074314 secs).
+#> [0m
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.029560 secs).
+#> [0m
+#> [0;32mMinutes from start:  0.125[0m
+#> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
-(distance_item_df <- calc_decision_similarity(paper_df, embed = embed_df))
+(distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))
 #> # A tibble: 74 × 4
-#>    paper1 paper2      item                          dist
+#>    paper1 paper2      decision                      dist
 #>    <chr>  <chr>       <chr>                        <dbl>
 #>  1 braga  katsouyanni humidity_parameter_method    1    
 #>  2 braga  katsouyanni temperature_parameter_method 1    
@@ -111,7 +154,7 @@ embed_df <- paper_df |> compute_text_embed()
 #> 10 braga  ostro       time_parameter_reason        0.728
 #> # ℹ 64 more rows
 # aggregate from decision similarity to paper similarity
-(distance_df <- distance_item_df |> calc_paper_similarity())
+(distance_df <- distance_decision_df |> calc_paper_similarity())
 #> # A tibble: 15 × 4
 #>    paper1      paper2        dist similarity
 #>    <fct>       <fct>        <dbl>      <dbl>
@@ -138,4 +181,43 @@ to_dist_mtx(distance_df)
 #> peel        1.00000000  0.78588531 0.54474610                      
 #> schwartz    0.10146916  0.14029528 0.56474610 0.63310631           
 #> zanobetti   0.05464868  0.07994514 0.68598039 0.82538338 0.14305712
+```
+
+## Diagnostics
+
+``` r
+diag_decision_ppp(distance_decision_df, distance_df)
+#> Joining with `by = join_by(paper1, paper2)`
+#> Storing counts in `nn`, as `n` already present in input
+#> Joining with `by = join_by(n)`
+#> # A tibble: 7 × 4
+#>   num_decision count   prop similarity
+#>          <int> <int>  <dbl>      <dbl>
+#> 1            2     1 0.0667      0    
+#> 2            3     2 0.133       0.194
+#> 3            4     4 0.267       0.699
+#> 4            5     1 0.0667      0.367
+#> 5            6     5 0.333       0.606
+#> 6            7     1 0.0667      0.435
+#> 7            8     1 0.0667      0.920
+view_pairs(paper_df, distance_decision_df, "braga", "zanobetti")
+#> Joining with `by = join_by(decision)`
+#> # A tibble: 15 × 4
+#>    decision                       braga                         zanobetti   dist
+#>    <chr>                          <chr>                         <chr>      <dbl>
+#>  1 humidity_parameter_method      LOESS                         LOESS      1    
+#>  2 humidity_parameter_reason      to minimize Akaike's Informa… to minim…  0.946
+#>  3 humidity_parameter_decision    <NA>                          <NA>      NA    
+#>  4 temperature_parameter_method   LOESS                         LOESS      1    
+#>  5 temperature_parameter_reason   to minimize Akaike's Informa… to minim…  0.946
+#>  6 temperature_parameter_decision <NA>                          <NA>      NA    
+#>  7 time_parameter_method          LOESS                         LOESS      1    
+#>  8 time_parameter_reason          to eliminate seasonal patter… to minim…  0.779
+#>  9 time_parameter_decision        <NA>                          <NA>      NA    
+#> 10 humidity_temporal_reason       <NA>                          <NA>      NA    
+#> 11 humidity_temporal_decision     <NA>                          previous… NA    
+#> 12 temperature_temporal_reason    <NA>                          <NA>      NA    
+#> 13 temperature_temporal_decision  <NA>                          previous… NA    
+#> 14 PM_temporal_reason             <NA>                          <NA>      NA    
+#> 15 PM_temporal_decision           <NA>                          <NA>      NA
 ```

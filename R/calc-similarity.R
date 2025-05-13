@@ -1,11 +1,11 @@
-#' Calculate item similarity
+#' Calculate decision similarity
 #'
 #' @param df A data frame.
-#' @param embed Optional. A text embedding.
+#' @param embed Optional. A text embedding object from `compute_text_embed()`.
 #' @param text_model A text model.
 #'
 #' @returns
-#' A list of similarity scores between pairs of items.
+#' A list of similarity scores between decision pairs
 #'
 #' @export
 #' @rdname calc-similarity
@@ -38,7 +38,7 @@ compute_text_embed <- function(df, text_model ="bert-base-uncased"){
 decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
     aa_split <- long_df |>
       dplyr::filter(paper %in% c(paper1, paper2)) |>
-      dplyr::group_split(item)
+      dplyr::group_split(decision)
     aa_split_good <- lapply(aa_split, function(x){if(length(unique(x$paper)) != 1){x}})
     aa_split_good <- aa_split_good[!vapply(aa_split_good, is.null, logical(1))]
     aa <- lapply(aa_split_good, function(x) x[["id"]])
@@ -51,7 +51,7 @@ decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
     aa_df <- aa_df[!sapply(aa_df, is.null)]
 
     type <- lapply(aa_df, function(x) {
-      items <- unique(x[["item"]])
+      items <- unique(x[["decision"]])
       matched <- regmatches(items, regexpr("method|reason|decision", items))
       matched
     })
@@ -63,14 +63,14 @@ decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
 
     res |>
       dplyr::left_join(long_df |>
-                         dplyr::select(paper, item, id) |>
+                         dplyr::select(paper, decision, id) |>
                          dplyr::rename(paper1 = paper),
                 by = c("id1" = "id")) |>
       dplyr::left_join(long_df |>
                          dplyr::select(paper, id) |>
                          dplyr::rename(paper2 = paper),
                 by = c("id2" = "id")) |>
-      dplyr::select(paper1, paper2, item, dist) |>
+      dplyr::select(paper1, paper2, decision, dist) |>
       dplyr::filter(!is.na(dist))
 }
 
@@ -160,5 +160,5 @@ to_dist_mtx <- function(df, paper_cols = c("paper1", "paper2")){
 globalVariables(c("paper", "model", "variable", "method", "parameter",
                   "type", "reason", "decision", "id", "paper1", "paper2",
                   "dist", "id2", "dist.x", "dist.y", "item", "embed_df",
-                  "distance_item_df", "count", "a", "variable_type",
+                  "distance_decision_df", "count", "a", "variable_type",
                   "n", "df", "nn", "ave_similarity_score_df", "dist_df"))

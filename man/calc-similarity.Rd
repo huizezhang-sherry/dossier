@@ -4,7 +4,7 @@
 \alias{calc_decision_similarity}
 \alias{compute_text_embed}
 \alias{calc_paper_similarity}
-\title{Calculate item similarity}
+\title{Calculate decision similarity}
 \usage{
 calc_decision_similarity(df, embed = NULL, text_model = "bert-base-uncased")
 
@@ -15,7 +15,7 @@ calc_paper_similarity(res, .f = mean)
 \arguments{
 \item{df}{A data frame.}
 
-\item{embed}{Optional. A text embedding.}
+\item{embed}{Optional. A text embedding object from `compute_text_embed()`.}
 
 \item{text_model}{A text model.}
 
@@ -24,13 +24,13 @@ calc_paper_similarity(res, .f = mean)
 \item{.f}{Optional. A function to aggregate distances, defaults to `mean`.}
 }
 \value{
-A list of similarity scores between pairs of items.
+A list of similarity scores between decision pairs
 
 A data frame containing pairwise paper similarity scores, with columns `paper1`,
 `paper2`, and `dist`. Papers with no comparison data are assigned a distance of 1.
 }
 \description{
-Calculate item similarity
+Calculate decision similarity
 
 Calculate paper similarity scores
 }
