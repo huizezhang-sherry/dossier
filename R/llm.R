@@ -10,6 +10,7 @@
 #' @param file A single string specifying where to save the output. By default,
 #' it saves a markdown file with the same name as the PDF file in the same directory.
 #' @param llm_model One of `"claude"` or `"gemini"` for processing pdf documents. Default to `"claude"`
+#' @param ... other arguments supplied to the LLM chat function, such as `seed`, `temperature`, etc.
 #'
 #' @returns
 #' Writes output to the specified file.
@@ -17,13 +18,15 @@
 #' @export
 #' @rdname llm
 #' @seealso [clean_md]
-summarize_pdf <- function(prompt_file, pdf, file = NULL, llm_model = "claude"){
+summarize_pdf <- function(prompt_file, pdf, file = NULL, ..., llm_model = "claude"){
+  args <- rlang::list2(...)
+
   prompt <- ellmer::interpolate_file(prompt_file)
 
   if (llm_model == "claude") {
-    chat <- ellmer::chat_claude()
+    chat <- do.call("chat_anthropic", args = list(params = args))
   } else if (llm_model == "gemini") {
-    chat <- ellmer::chat_gemini()
+    chat <- do.call("chat_google_gemini", args = list(params = args))
   } else {
     stop("Unsupported LLM model. Please use 'claude' or 'gemini'.")
   }
@@ -33,7 +36,7 @@ summarize_pdf <- function(prompt_file, pdf, file = NULL, llm_model = "claude"){
   }
 
   writeLines(
-    chat$chat(prompt_file, ellmer::content_pdf_file(pdf)),
+    chat$chat(prompt, ellmer::content_pdf_file(pdf)),
     con = file
   )
 

@@ -5,9 +5,9 @@
 \alias{summarise_pdf}
 \title{Summarize PDF via LLM}
 \usage{
-summarize_pdf(prompt_file, pdf, file = NULL, llm_model = "claude")
+summarize_pdf(prompt_file, pdf, file = NULL, ..., llm_model = "claude")
 
-summarise_pdf(prompt_file, pdf, file = NULL, llm_model = "claude")
+summarise_pdf(prompt_file, pdf, file = NULL, ..., llm_model = "claude")
 }
 \arguments{
 \item{prompt_file}{A single string containing the prompt}
@@ -16,6 +16,8 @@ summarise_pdf(prompt_file, pdf, file = NULL, llm_model = "claude")
 
 \item{file}{A single string specifying where to save the output. By default,
 it saves a markdown file with the same name as the PDF file in the same directory.}
+
+\item{...}{other arguments supplied to the LLM chat function, such as `seed`, `temperature`, etc.}
 
 \item{llm_model}{One of `"claude"` or `"gemini"` for processing pdf documents. Default to `"claude"`}
 }

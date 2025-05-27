@@ -18,9 +18,11 @@ Imports:
     ellmer,
     jsonlite,
     purrr,
+    rlang,
     text,
     tibble,
     tidyr
 Suggests: 
+    ggdendro,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

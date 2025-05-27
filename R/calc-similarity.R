@@ -135,28 +135,6 @@ calc_paper_similarity <- function(res, .f = mean) {
 }
 
 
-#' Convert a dataframe to a distance matrix
-#'
-#' @param df A dataframe.
-#' @param paper_cols Optional. A character vector of length 2 specifying the column names for the papers being compared. Default is `c("paper1", "paper2")`.
-#'
-#' @returns
-#' A distance matrix object of class `"dist"`.
-#'
-#' @export
-to_dist_mtx <- function(df, paper_cols = c("paper1", "paper2")){
-  papers <- unname(sapply(paper_cols, function(col) unique(as.character(df[[col]])), simplify = TRUE))
-  papers <- c(papers[,1], utils::tail(papers[,2], 1))
-  dist_m <- df$dist
-  class(dist_m) <- "dist"
-  attr(dist_m, "Size") <- length(papers)
-  attr(dist_m, "Labels") <- papers
-  attr(dist_m, "Dia") <- FALSE
-  attr(dist_m, "Upper") <- FALSE
-  dist_m
-}
-
-
 globalVariables(c("paper", "model", "variable", "method", "parameter",
                   "type", "reason", "decision", "id", "paper1", "paper2",
                   "dist", "id2", "dist.x", "dist.y", "item", "embed_df",

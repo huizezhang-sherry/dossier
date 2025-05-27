@@ -137,7 +137,7 @@
 <span><span class="co"># final data frame to compare</span></span>
 <span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/decision-table.html">pivot_decision_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">paper</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">good_papers</span><span class="op">$</span><span class="va">paper</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/summarize.html">summarize_decision_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/summarize.html">summarize_decisions_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 15 × 3</span></span>
 <span><span class="co">#&gt;    paper1      paper2      pairs</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;int&gt;</span></span>
@@ -156,7 +156,7 @@
 <span><span class="co">#&gt; 13 peel        schwartz        5</span></span>
 <span><span class="co">#&gt; 14 peel        zanobetti       3</span></span>
 <span><span class="co">#&gt; 15 schwartz    zanobetti       4</span></span>
-<span><span class="fu"><a href="reference/summarize.html">summarize_decision_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/summarize.html">summarize_decisions_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 7 × 2</span></span>
 <span><span class="co">#&gt;   pairs     n</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span></span>
@@ -172,15 +172,15 @@
 <span><span class="va">embed_df</span> <span class="op">&lt;-</span> <span class="va">paper_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">compute_text_embed</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">Processing batch 1/1</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 2.923244 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 3.091134 secs).</span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers aggregation for word_type_embeddings. </span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.050543 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.074314 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.131660 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.029560 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.122</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.125</span></span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">Estimated embedding time left = 0 minutes</span></span></span>
 <span><span class="co"># calculate decision similarity</span></span>
 <span><span class="op">(</span><span class="va">distance_decision_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc-similarity.html">calc_decision_similarity</a></span><span class="op">(</span><span class="va">paper_df</span>, embed <span class="op">=</span> <span class="va">embed_df</span><span class="op">)</span><span class="op">)</span></span>
