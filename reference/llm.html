@@ -56,9 +56,9 @@ file and instruct the LLM to write the output in a json block. Use the function
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summarize_pdf</span><span class="op">(</span><span class="va">prompt_file</span>, <span class="va">pdf</span>, file <span class="op">=</span> <span class="cn">NULL</span>, llm_model <span class="op">=</span> <span class="st">"claude"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summarize_pdf</span><span class="op">(</span><span class="va">prompt_file</span>, <span class="va">pdf</span>, file <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, llm_model <span class="op">=</span> <span class="st">"claude"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">summarise_pdf</span><span class="op">(</span><span class="va">prompt_file</span>, <span class="va">pdf</span>, file <span class="op">=</span> <span class="cn">NULL</span>, llm_model <span class="op">=</span> <span class="st">"claude"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">summarise_pdf</span><span class="op">(</span><span class="va">prompt_file</span>, <span class="va">pdf</span>, file <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, llm_model <span class="op">=</span> <span class="st">"claude"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,6 +76,10 @@ file and instruct the LLM to write the output in a json block. Use the function
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>A single string specifying where to save the output. By default,
 it saves a markdown file with the same name as the PDF file in the same directory.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>other arguments supplied to the LLM chat function, such as `seed`, `temperature`, etc.</p></dd>
 
 
 <dt id="arg-llm-model">llm_model<a class="anchor" aria-label="anchor" href="#arg-llm-model"></a></dt>
@@ -103,7 +107,7 @@ it saves a markdown file with the same name as the PDF file in the same director
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
       </footer></div>
