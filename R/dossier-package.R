@@ -5,7 +5,7 @@
 #' @importFrom text textEmbed textSimilarity
 #' @importFrom purrr map2 map2_dfr
 #' @importFrom cli cli_abort
-#' @importFrom dplyr filter mutate select rowwise ungroup summarise group_by arrange bind_cols
+#' @importFrom dplyr filter mutate select rowwise ungroup summarise group_by arrange bind_cols across
 #' @keywords internal
 "_PACKAGE"
 

@@ -3,26 +3,26 @@ template:
     bootswatch: cosmo
 
 reference:
-- title: "Query and clean LLM"
-  desc: >
-    ...
+- title: "Extract decisions from PDF inputs"
+  desc:
   contents:
    - summarize_pdf
    - clean_md
-- title: "Calculate paper similarity"
-  desc: >
-    ...
+- title: "Pre-process"
+  desc:
+  contents:
+   - count_variable_type
+   - summarize_num_decisions_pp
+- title: "Calculate paper similarity and diagnostics"
+  desc:
   contents:
    - calc_decision_similarity
-- title: "Diagnostics and summaries"
-  desc: >
-    ...
-  contents:
-   - summarize_num_decisions_pp
    - diag_decision_ppp
-- title: "Table reshaping"
-  desc: >
-    ...
+- title: "Cluster and visualization"
+  desc:
+  contents:
+   - run_hclust
+- title: "Misc"
+  desc:
   contents:
    - pivot_decision_wider
-   - to_dist_mtx

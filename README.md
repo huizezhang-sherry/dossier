@@ -10,18 +10,25 @@
 coverage](https://codecov.io/gh/huizezhang-sherry/dossier/graph/badge.svg)](https://app.codecov.io/gh/huizezhang-sherry/dossier)
 <!-- badges: end -->
 
-The goal of dossier is to …
+The `dossier` package provides tools to analyze and compare decisions
+made in the data analysis across multiple applied studies on the same
+topic. It helps explore the “garden of forking paths” by highlighting
+patterns, similarities, and differences in how analyses are conducted.
 
 ## Installation
 
-You can install the released version of cubble from
-[CRAN](https://CRAN.R-project.org) with:
+<!-- You can install the released version of dossier from [CRAN](https://CRAN.R-project.org) with: -->
 
-``` r
-install.packages("dossier")
-```
+<!-- ``` r -->
 
-And the development version from [GitHub](https://github.com/) with:
+<!-- install.packages("dossier") -->
+
+<!-- ``` -->
+
+<!-- And  -->
+
+You can install the development version from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")
@@ -127,15 +134,15 @@ summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
 embed_df <- paper_df |> compute_text_embed()
 #> [0;34mProcessing batch 1/1
 #> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.091134 secs).
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.332266 secs).
 #> [0m
 #> [0;32mCompleted layers aggregation for word_type_embeddings. 
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.074314 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.476213 secs).
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.029560 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.527775 secs).
 #> [0m
-#> [0;32mMinutes from start:  0.125[0m
+#> [0;32mMinutes from start:  0.143[0m
 #> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))

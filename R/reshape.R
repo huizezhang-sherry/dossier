@@ -81,6 +81,7 @@ create_good_variables <- function(df, n = NULL, n_value = NULL){
 #' @rdname decision-table
 pivot_decision_longer <- function(df){
   df |>
+    dplyr::mutate(dplyr::across(-c(paper, model), as.character)) |>
     tidyr::pivot_longer(-c(paper, model), names_to = "decision", values_to = "reason") |>
     tidyr::unnest(reason) |>
     dplyr::filter(!is.na(reason)) |>

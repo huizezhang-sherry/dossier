@@ -69,5 +69,7 @@ clean_md <- function(file){
   json_text <- gsub("\n(?=[A-Za-z(0-9])", "", json_text, perl = TRUE)
   json_text <- gsub("NA,", '"NA",', json_text)
 
-  jsonlite::fromJSON(json_text)$decisions |> tibble::as_tibble()
+  res <- jsonlite::fromJSON(json_text)$decisions |> tibble::as_tibble()
+  tibble::tibble(paper = tools::file_path_sans_ext(basename(file))) |>
+    dplyr::bind_cols(res)
 }

@@ -20,17 +20,19 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/huizezhang-sherry/dossier/graph/badge.svg)](https://app.codecov.io/gh/huizezhang-sherry/dossier)
 <!-- badges: end -->
 
-The goal of dossier is to ...
+The `dossier` package provides tools to analyze and compare decisions made in the data analysis across multiple applied studies on the same topic. It helps explore the "garden of forking paths" by highlighting patterns, similarities, and differences in how analyses are conducted.
 
 ## Installation
 
-You can install the released version of cubble from [CRAN](https://CRAN.R-project.org) with:
+<!-- You can install the released version of dossier from [CRAN](https://CRAN.R-project.org) with: -->
 
-``` r
-install.packages("dossier")
-```
+<!-- ``` r -->
+<!-- install.packages("dossier") -->
+<!-- ``` -->
 
-And the development version from [GitHub](https://github.com/) with:
+<!-- And  -->
+
+You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")

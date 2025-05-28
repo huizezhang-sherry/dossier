@@ -1,4 +1,4 @@
-#' Convert a dataframe to a distance matrix
+#' Wrapper for hierarchical clustering and Multi-Dimensional Scaling (MDS)
 #'
 #' @param df A dataframe.
 #' @param paper_cols Optional. A character vector of length 2 specifying the column names for the papers being compared.
