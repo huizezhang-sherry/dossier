@@ -48,11 +48,15 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="llm.html">summarize_pdf()</a></code> <code><a href="llm.html">summarise_pdf()</a></code> </p>
+          <p><code><a href="llm.html">extract_decisions()</a></code> </p>
         </td>
         <td><p>Summarize PDF via LLM</p></td>
       </tr><tr><td>
           <p><code><a href="clean_md.html">clean_md()</a></code> </p>
+        </td>
+        <td><p>Extract JSON decisions from the markdown file</p></td>
+      </tr><tr><td>
+          <p><code><a href="class.html">to_decision_tbl()</a></code> </p>
         </td>
         <td><p>Extract JSON decisions from the markdown file</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -60,7 +64,7 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="summarize.html">count_variable_type()</a></code> <code><a href="summarize.html">create_good_variables()</a></code> <code><a href="summarize.html">summarize_variable_binary()</a></code> <code><a href="summarize.html">summarize_num_decisions_pp()</a></code> <code><a href="summarize.html">slice_papers()</a></code> <code><a href="summarize.html">summarize_decisions_ppp()</a></code> <code><a href="summarize.html">filter_variable_type()</a></code> </p>
+          <p><code><a href="summarize.html">summarize_num_decisions_pp()</a></code> <code><a href="summarize.html">filter_papers()</a></code> <code><a href="summarize.html">summarize_decisions_ppp()</a></code> <code><a href="summarize.html">filter_var_type()</a></code> <code><a href="summarize.html">count_variable_type()</a></code> <code><a href="summarize.html">create_good_variables()</a></code> <code><a href="summarize.html">summarize_variable_binary()</a></code> </p>
         </td>
         <td><p>Summarize number of decisions per paper</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -82,15 +86,19 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="dim-red.html">to_dist_mtx()</a></code> <code><a href="dim-red.html">run_hclust()</a></code> <code><a href="dim-red.html">run_mds()</a></code> </p>
         </td>
-        <td><p>Convert a dataframe to a distance matrix</p></td>
+        <td><p>Wrapper for hierarchical clustering and Multi-Dimensional Scaling (MDS)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="misc">Misc <a href="#misc" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="decision-table.html">pivot_decision_wider()</a></code> <code><a href="decision-table.html">pivot_variable_wider()</a></code> <code><a href="decision-table.html">pivot_decision_longer()</a></code> </p>
+          <p><code><a href="decision-table.html">pivot_decision_tbl_wider()</a></code> <code><a href="decision-table.html">pivot_decision_tbl_longer()</a></code> </p>
         </td>
-        <td><p>Convert decision data to wide format</p></td>
+        <td><p>Convert the decision table into long or wide format</p></td>
+      </tr><tr><td>
+          <p><code><a href="grid.html">gen_paper_grid()</a></code> </p>
+        </td>
+        <td><p>Generate pairwise grid for papers</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
