@@ -4,7 +4,7 @@
 \alias{to_dist_mtx}
 \alias{run_hclust}
 \alias{run_mds}
-\title{Convert a dataframe to a distance matrix}
+\title{Wrapper for hierarchical clustering and Multi-Dimensional Scaling (MDS)}
 \usage{
 to_dist_mtx(df, paper_cols = c("paper1", "paper2"))
 
@@ -23,5 +23,5 @@ run_mds(df, paper_cols = c("paper1", "paper2"))
 A distance matrix object of class `"dist"`.
 }
 \description{
-Convert a dataframe to a distance matrix
+Wrapper for hierarchical clustering and Multi-Dimensional Scaling (MDS)
 }

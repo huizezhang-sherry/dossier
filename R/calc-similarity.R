@@ -10,12 +10,12 @@
 #' @export
 #' @rdname calc-similarity
 calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased"){
-  long_df <- pivot_decision_longer(df)
+  check_df_std(df)
+  long_df <- pivot_decision_tbl_longer(df)
 
-  if (is.null(embed)) {
-    embed <- text::textEmbed(long_df$reason, model = text_model)
-    }
-  res_df <- gen_pairwise_paper_grid(df, "paper")
+  if (is.null(embed)) embed <- text::textEmbed(long_df$reason, model = text_model)
+
+  res_df <- gen_paper_grid(df, "paper")
   res_df <- mapply(
     function(x, y) decision_similarity_workhorse(x, y, long_df, embed),
     res_df[["paper1"]], res_df[["paper2"]] , SIMPLIFY = FALSE
@@ -28,7 +28,8 @@ calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-u
 #' @export
 #' @rdname calc-similarity
 compute_text_embed <- function(df, text_model ="bert-base-uncased"){
-  long_df <- pivot_decision_longer(df)
+  check_df_std(df)
+  long_df <- pivot_decision_tbl_longer(df)
   embed <- text::textEmbed(long_df$reason, model = text_model)
   return(embed)
 }
@@ -38,7 +39,7 @@ compute_text_embed <- function(df, text_model ="bert-base-uncased"){
 decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
     aa_split <- long_df |>
       dplyr::filter(paper %in% c(paper1, paper2)) |>
-      dplyr::group_split(decision)
+      dplyr::group_split(variable, type, decision)
     aa_split_good <- lapply(aa_split, function(x){if(length(unique(x$paper)) != 1){x}})
     aa_split_good <- aa_split_good[!vapply(aa_split_good, is.null, logical(1))]
     aa <- lapply(aa_split_good, function(x) x[["id"]])
@@ -116,7 +117,7 @@ calc_paper_similarity <- function(res, .f = mean) {
     dplyr::ungroup()
 
   papers <- as.vector(unique(c(res$paper1, res$paper2)))
-  gen_pairwise_paper_grid(res, paper_cols = c("paper1", "paper2")) |>
+  gen_paper_grid(res, cols = c("paper1", "paper2")) |>
     dplyr::mutate(id = paste0(paper1, "-", paper2)) |>
     dplyr::left_join(comparison_long |>
                        mutate(id = paste0(paper1, "-", paper2)) |>

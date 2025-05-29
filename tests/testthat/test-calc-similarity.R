@@ -1,7 +1,7 @@
 
 # test_that("multiplication works", {
 #   expect_snapshot(count_variable_type(raw_df))
-#   df <- raw_df |> filter_variable_type(n = 6) # first 6 variable-type pairs
+#   df <- raw_df |> filter_var_type(n = 6) # first 6 variable-type pairs
 #   good_papers <- pivot_variable_wider(df) |> slice_papers(n_count = 3)
 #   paper_df <- pivot_decision_wider(df) |> filter(paper %in% good_papers$paper)
 #
@@ -16,7 +16,7 @@
 
 test_that("multiplication works", {
   paper_vec <- c("braga", "katsouyanni", "ostro", "peel", "schwartz", "zanobetti")
-  expect_snapshot(tibble::tibble(paper = paper_vec) |> gen_pairwise_paper_grid("paper"))
+  expect_snapshot(gen_paper_grid(paper_vec))
 
   set.seed(123)
   cols <- paper_vec |> combn(2) |> t()
@@ -25,7 +25,9 @@ test_that("multiplication works", {
     tibble::as_tibble() |>
     dplyr::slice_sample(prop = 0.9) |>
     dplyr::arrange(V1, V2)
-  expect_snapshot(grid |> gen_pairwise_paper_grid(paper_cols = c("V1", "V2")))
+
+  expect_snapshot(grid |> gen_paper_grid(cols = c("V1", "V2")))
+  expect_snapshot(grid |> gen_paper_grid(cols = c("V1", "V2"), new_names = c("V1", "V2")))
 })
 
 

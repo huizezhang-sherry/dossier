@@ -4,15 +4,24 @@
 \name{dossier-package}
 \alias{dossier}
 \alias{dossier-package}
-\title{dossier: What the Package Does (Title Case)}
+\title{dossier: Reveal the Forking Paths of Decisions in Data Analysis}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+Tools to extract and summarize decisions in the data analysis from PDF research papers. Methods to measure similarities between studies, cluster them, and visualize the results.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/huizezhang-sherry/dossier}
   \item Report bugs at \url{https://github.com/huizezhang-sherry/dossier/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: H. Sherry Zhang \email{huizezhangsh@gmail.com}
+
+Authors:
+\itemize{
+  \item Roger Peng
 }
 
 }

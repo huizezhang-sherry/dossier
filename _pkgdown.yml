@@ -6,8 +6,9 @@ reference:
 - title: "Extract decisions from PDF inputs"
   desc:
   contents:
-   - summarize_pdf
+   - extract_decisions
    - clean_md
+   - to_decision_tbl
 - title: "Pre-process"
   desc:
   contents:
@@ -25,4 +26,5 @@ reference:
 - title: "Misc"
   desc:
   contents:
-   - pivot_decision_wider
+   - pivot_decision_tbl_wider
+   - gen_paper_grid

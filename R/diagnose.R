@@ -42,9 +42,10 @@ diag_decision_ppp <- function(decision_df, distance_df){
 view_pairs <- function(paper_df, decision_df, pp1, pp2){
   res <- paper_df |>
     dplyr::filter(paper %in% c(pp1, pp2)) |>
-    tidyr::pivot_longer(-c(paper, model), names_to = "decision", values_to = "reason") |>
-    tidyr::pivot_wider(id_cols = -model, names_from = paper, values_from = reason) |>
-    unnest(c(pp1, pp2))
+    pivot_decision_tbl_longer() |>
+    tidyr::pivot_wider(id_cols = -c(model, id), names_from = paper, values_from = reason) |>
+    unnest(c(pp1, pp2)) |>
+    select(-c(variable, type, parameter))
 
   score_df <- decision_df |>
     dplyr::filter((paper1 == pp1 & paper2 == pp2) | (paper1 == pp2 & paper2 == pp1)) |>

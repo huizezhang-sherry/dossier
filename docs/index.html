@@ -103,10 +103,11 @@
 <span><span class="co">#&gt;  8 braga       time                spati… gene… &lt;NA&gt;   &lt;NA&gt;      seaso… chosen …</span></span>
 <span><span class="co">#&gt;  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
 <span><span class="co">#&gt; 10 katsouyanni humidity            tempo… gene… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
-<span><span class="co">#&gt; # ℹ 25 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 25 more rows</span></span>
+<span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/class.html">to_decision_tbl</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select the variable-type pair to compare papers</span></span>
-<span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 11 × 3</span></span>
 <span><span class="co">#&gt;    variable            type          n</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;               &lt;chr&gt;     &lt;int&gt;</span></span>
@@ -121,10 +122,10 @@
 <span><span class="co">#&gt;  9 barometric_pressure spatial       1</span></span>
 <span><span class="co">#&gt; 10 humidity            spatial       1</span></span>
 <span><span class="co">#&gt; 11 temperature         spatial       1</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">raw_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_variable_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">tbl_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_var_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
 <span></span>
 <span><span class="co"># subset to papers with at least 3 decisions</span></span>
-<span><span class="fu"><a href="reference/decision-table.html">pivot_variable_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">summarize_num_decisions_pp</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/summarize.html">summarize_num_decisions_pp</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
 <span><span class="co">#&gt;   paper       count</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;       &lt;dbl&gt;</span></span>
@@ -134,10 +135,40 @@
 <span><span class="co">#&gt; 4 peel            4</span></span>
 <span><span class="co">#&gt; 5 braga           3</span></span>
 <span><span class="co">#&gt; 6 schwartz        3</span></span>
-<span><span class="va">good_papers</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/decision-table.html">pivot_variable_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">slice_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># final data frame to compare</span></span>
-<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/decision-table.html">pivot_decision_wider</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">paper</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">good_papers</span><span class="op">$</span><span class="va">paper</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/decision-table.html">pivot_decision_tbl_longer</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 47 × 8</span></span>
+<span><span class="co">#&gt;    paper       variable    type      model       parameter decision reason    id</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;  &lt;int&gt;</span></span>
+<span><span class="co">#&gt;  1 braga       humidity    parameter generalize… smoothin… humidit… LOESS      1</span></span>
+<span><span class="co">#&gt;  2 braga       humidity    parameter generalize… smoothin… humidit… to mi…     2</span></span>
+<span><span class="co">#&gt;  3 braga       temperature parameter generalize… smoothin… tempera… LOESS      3</span></span>
+<span><span class="co">#&gt;  4 braga       temperature parameter generalize… smoothin… tempera… to mi…     4</span></span>
+<span><span class="co">#&gt;  5 braga       time        parameter generalize… smoothin… time_pa… LOESS      5</span></span>
+<span><span class="co">#&gt;  6 braga       time        parameter generalize… smoothin… time_pa… to el…     6</span></span>
+<span><span class="co">#&gt;  7 katsouyanni humidity    parameter generalize… smoothin… humidit… LOESS      7</span></span>
+<span><span class="co">#&gt;  8 katsouyanni humidity    parameter generalize… smoothin… humidit… to mi…     8</span></span>
+<span><span class="co">#&gt;  9 katsouyanni humidity    temporal  generalize… &lt;NA&gt;      humidit… same …     9</span></span>
+<span><span class="co">#&gt; 10 katsouyanni temperature parameter generalize… smoothin… tempera… LOESS     10</span></span>
+<span><span class="co">#&gt; # ℹ 37 more rows</span></span>
+<span><span class="fu"><a href="reference/decision-table.html">pivot_decision_tbl_wider</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 17</span></span>
+<span><span class="co">#&gt;   paper       model                humidity_parameter_m…¹ humidity_parameter_r…²</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;                &lt;chr&gt;                  &lt;chr&gt;                 </span></span>
+<span><span class="co">#&gt; 1 braga       generalized additiv… LOESS                  to minimize Akaike's …</span></span>
+<span><span class="co">#&gt; 2 katsouyanni generalized additiv… LOESS                  to minimize Akaike's …</span></span>
+<span><span class="co">#&gt; 3 ostro       Poisson regression   smoothing spline       &lt;NA&gt;                  </span></span>
+<span><span class="co">#&gt; 4 peel        Poisson generalized… &lt;NA&gt;                   &lt;NA&gt;                  </span></span>
+<span><span class="co">#&gt; 5 schwartz    Poisson regression   &lt;NA&gt;                   &lt;NA&gt;                  </span></span>
+<span><span class="co">#&gt; 6 zanobetti   generalized additiv… LOESS                  to minimize Akaike's …</span></span>
+<span><span class="co">#&gt; # ℹ abbreviated names: ¹​humidity_parameter_method, ²​humidity_parameter_reason</span></span>
+<span><span class="co">#&gt; # ℹ 13 more variables: humidity_parameter_decision &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   temperature_parameter_method &lt;chr&gt;, temperature_parameter_reason &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   temperature_parameter_decision &lt;chr&gt;, time_parameter_method &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   time_parameter_reason &lt;chr&gt;, time_parameter_decision &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   humidity_temporal_reason &lt;chr&gt;, humidity_temporal_decision &lt;chr&gt;,</span></span>
+<span><span class="co">#&gt; #   temperature_temporal_reason &lt;chr&gt;, temperature_temporal_decision &lt;chr&gt;, …</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/summarize.html">summarize_decisions_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 15 × 3</span></span>
@@ -174,15 +205,15 @@
 <span><span class="va">embed_df</span> <span class="op">&lt;-</span> <span class="va">paper_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">compute_text_embed</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">Processing batch 1/1</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 3.495635 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 4.061170 secs).</span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers aggregation for word_type_embeddings. </span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.522513 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.610729 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.476368 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.439704 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.146</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.159</span></span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">Estimated embedding time left = 0 minutes</span></span></span>
 <span><span class="co"># calculate decision similarity</span></span>
 <span><span class="op">(</span><span class="va">distance_decision_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc-similarity.html">calc_decision_similarity</a></span><span class="op">(</span><span class="va">paper_df</span>, embed <span class="op">=</span> <span class="va">embed_df</span><span class="op">)</span><span class="op">)</span></span>
@@ -219,15 +250,7 @@
 <span><span class="co">#&gt; 12 ostro       zanobetti   0.686       0.314</span></span>
 <span><span class="co">#&gt; 13 peel        schwartz    0.633       0.367</span></span>
 <span><span class="co">#&gt; 14 peel        zanobetti   0.825       0.175</span></span>
-<span><span class="co">#&gt; 15 schwartz    zanobetti   0.143       0.857</span></span>
-<span><span class="co"># turn into a standard distance matrix</span></span>
-<span><span class="fu"><a href="reference/dim-red.html">to_dist_mtx</a></span><span class="op">(</span><span class="va">distance_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                  braga katsouyanni      ostro       peel   schwartz</span></span>
-<span><span class="co">#&gt; katsouyanni 0.05780111                                             </span></span>
-<span><span class="co">#&gt; ostro       0.81790385  0.62691960                                 </span></span>
-<span><span class="co">#&gt; peel        1.00000000  0.78588531 0.54474610                      </span></span>
-<span><span class="co">#&gt; schwartz    0.10146916  0.14029528 0.56474610 0.63310631           </span></span>
-<span><span class="co">#&gt; zanobetti   0.05464868  0.07994514 0.68598039 0.82538338 0.14305712</span></span></code></pre></div>
+<span><span class="co">#&gt; 15 schwartz    zanobetti   0.143       0.857</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
@@ -249,24 +272,17 @@
 <span><span class="co">#&gt; 7            8     1 0.0667      0.920</span></span>
 <span><span class="fu"><a href="reference/diagnose.html">view_pairs</a></span><span class="op">(</span><span class="va">paper_df</span>, <span class="va">distance_decision_df</span>, <span class="st">"braga"</span>, <span class="st">"zanobetti"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(decision)`</span></span>
-<span><span class="co">#&gt; # A tibble: 15 × 4</span></span>
-<span><span class="co">#&gt;    decision                       braga                         zanobetti   dist</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                          &lt;chr&gt;                         &lt;chr&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 humidity_parameter_method      LOESS                         LOESS      1    </span></span>
-<span><span class="co">#&gt;  2 humidity_parameter_reason      to minimize Akaike's Informa… to minim…  0.946</span></span>
-<span><span class="co">#&gt;  3 humidity_parameter_decision    &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt;  4 temperature_parameter_method   LOESS                         LOESS      1    </span></span>
-<span><span class="co">#&gt;  5 temperature_parameter_reason   to minimize Akaike's Informa… to minim…  0.946</span></span>
-<span><span class="co">#&gt;  6 temperature_parameter_decision &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt;  7 time_parameter_method          LOESS                         LOESS      1    </span></span>
-<span><span class="co">#&gt;  8 time_parameter_reason          to eliminate seasonal patter… to minim…  0.779</span></span>
-<span><span class="co">#&gt;  9 time_parameter_decision        &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt; 10 humidity_temporal_reason       &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt; 11 humidity_temporal_decision     &lt;NA&gt;                          previous… NA    </span></span>
-<span><span class="co">#&gt; 12 temperature_temporal_reason    &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt; 13 temperature_temporal_decision  &lt;NA&gt;                          previous… NA    </span></span>
-<span><span class="co">#&gt; 14 PM_temporal_reason             &lt;NA&gt;                          &lt;NA&gt;      NA    </span></span>
-<span><span class="co">#&gt; 15 PM_temporal_decision           &lt;NA&gt;                          &lt;NA&gt;      NA</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 8 × 4</span></span>
+<span><span class="co">#&gt;   decision                      braga                           zanobetti   dist</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                         &lt;chr&gt;                           &lt;chr&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 humidity_parameter_method     LOESS                           LOESS      1    </span></span>
+<span><span class="co">#&gt; 2 humidity_parameter_reason     to minimize Akaike's Informati… to minim…  0.946</span></span>
+<span><span class="co">#&gt; 3 temperature_parameter_method  LOESS                           LOESS      1    </span></span>
+<span><span class="co">#&gt; 4 temperature_parameter_reason  to minimize Akaike's Informati… to minim…  0.946</span></span>
+<span><span class="co">#&gt; 5 time_parameter_method         LOESS                           LOESS      1    </span></span>
+<span><span class="co">#&gt; 6 time_parameter_reason         to eliminate seasonal patterns… to minim…  0.779</span></span>
+<span><span class="co">#&gt; 7 humidity_temporal_decision    &lt;NA&gt;                            previous… NA    </span></span>
+<span><span class="co">#&gt; 8 temperature_temporal_decision &lt;NA&gt;                            previous… NA</span></span></code></pre></div>
 </div>
 </div>
   </div>

@@ -18,7 +18,7 @@
 #' @export
 #' @rdname llm
 #' @seealso [clean_md]
-summarize_pdf <- function(prompt_file, pdf, file = NULL, ..., llm_model = "claude"){
+extract_decisions <- function(prompt_file, pdf, file = NULL, ..., llm_model = "claude"){
   args <- rlang::list2(...)
 
   prompt <- ellmer::interpolate_file(prompt_file)
@@ -42,9 +42,25 @@ summarize_pdf <- function(prompt_file, pdf, file = NULL, ..., llm_model = "claud
 
 }
 
-#' @rdname llm
+#' Deprecated functions
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' * [summarize_pdf()]/ [summarise_pdf()] are renamed to [extract_decisions()].
+#' @keywords internal
+#' @rdname deprecated
 #' @export
-summarise_pdf <- summarize_pdf
+summarize_pdf <- function(...) {
+  lifecycle::deprecate_warn("0.1.1", "summarize_pdf()", "extract_decisions()")
+  extract_decisions(...)
+}
+
+#' @rdname deprecated
+#' @export
+summarize_pdf <- function(...) {
+  lifecycle::deprecate_warn("0.1.1", "summarize_pdf()", "extract_decisions()")
+  extract_decisions(...)
+}
+
 
 #' Extract JSON decisions from the markdown file
 #'
@@ -70,6 +86,86 @@ clean_md <- function(file){
   json_text <- gsub("NA,", '"NA",', json_text)
 
   res <- jsonlite::fromJSON(json_text)$decisions |> tibble::as_tibble()
-  tibble::tibble(paper = tools::file_path_sans_ext(basename(file))) |>
+  res <- tibble::tibble(paper = tools::file_path_sans_ext(basename(file))) |>
     dplyr::bind_cols(res)
+
+  class(res) <- "decision_tbl"
+  attr(res, "form") <- "std"
+  res
+}
+
+#' Create the decision table object
+#'
+#' @description
+#' Extract the json block from the markdown file and convert it to a tibble.
+#'
+#' @param df A data frame or tibble to be casted into a decision table object
+#'
+#' @returns
+#' A tibble of class decision_tbl
+#'
+#' @export
+#' @rdname class
+#' @examples
+#' raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
+#' to_decision_tbl(raw_df)
+to_decision_tbl <- function(df){
+
+  new_decision_tbl(df, form = "std")
+}
+
+
+new_decision_tbl <- function(df, ...){
+
+  args <- rlang::list2(...)
+
+  res <- tibble::new_tibble(df, !!!args)
+  class(res) <- c("decision_tbl", class(df))
+  res
+}
+
+
+check_df_std <- function(df){
+
+  check_decision_tbl(df)
+  if (attr(df, "form") != "std"){
+    cli::cli_abort("A {.field std} format of the decision table is required. ")
+  }
+}
+
+check_df_var_type_wide <- function(df){
+
+  check_decision_tbl(df)
+  if (attr(df, "form") != "var_type_wide"){
+    cli::cli_abort("A {.field wide} format of the decision table is required.
+                   Consider using {.fn pivot_var_type_wider} to reshape the decision table.")
+  }
+}
+
+
+check_df_tbl_wide <- function(df){
+
+  check_decision_tbl(df)
+  if (attr(df, "form") != "tbl_wide"){
+    cli::cli_abort("A {.field wide} format of the decision table is required.
+                   Consider using {.fn pivot_decision_tbl_wider} to reshape the decision table.")
+  }
+}
+
+
+
+check_df_long <- function(df){
+
+  check_decision_tbl(df)
+  if (attr(df, "form") != "long"){
+    cli::cli_abort("A {.field long} format of the decision table is required.
+                   Consider using {.fn pivot_decision_tbl_longer} to reshape the decision table.")
+  }
+}
+
+
+check_decision_tbl <- function(df){
+  if (!inherits(df, "decision_tbl")){
+    cli::cli_abort("An {.field decision_tbl} object is required as the input, please check")
+  }
 }

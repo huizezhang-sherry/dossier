@@ -58,11 +58,12 @@ library(text)
 #>  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… <NA>    
 #> 10 katsouyanni humidity            tempo… gene… <NA>   <NA>      <NA>   same da…
 #> # ℹ 25 more rows
+tbl_df <- to_decision_tbl(raw_df)
 ```
 
 ``` r
 # select the variable-type pair to compare papers
-count_variable_type(raw_df)
+count_variable_type(tbl_df)
 #> # A tibble: 11 × 3
 #>    variable            type          n
 #>    <chr>               <chr>     <int>
@@ -77,10 +78,10 @@ count_variable_type(raw_df)
 #>  9 barometric_pressure spatial       1
 #> 10 humidity            spatial       1
 #> 11 temperature         spatial       1
-df <- raw_df |> filter_variable_type(n = 6) # first 6 variable-type pairs
+df <- tbl_df |> filter_var_type(n = 6) # first 6 variable-type pairs
 
 # subset to papers with at least 3 decisions
-pivot_variable_wider(df) |> summarize_num_decisions_pp()
+summarize_num_decisions_pp(df)
 #> # A tibble: 6 × 2
 #>   paper       count
 #>   <chr>       <dbl>
@@ -90,10 +91,40 @@ pivot_variable_wider(df) |> summarize_num_decisions_pp()
 #> 4 peel            4
 #> 5 braga           3
 #> 6 schwartz        3
-good_papers <- pivot_variable_wider(df) |> slice_papers(n_count = 3)
+paper_df <- df |> filter_papers(n_count = 3)
 
-# final data frame to compare
-paper_df <- pivot_decision_wider(df) |> filter(paper %in% good_papers$paper)
+pivot_decision_tbl_longer(paper_df)
+#> # A tibble: 47 × 8
+#>    paper       variable    type      model       parameter decision reason    id
+#>    <chr>       <chr>       <chr>     <chr>       <chr>     <chr>    <chr>  <int>
+#>  1 braga       humidity    parameter generalize… smoothin… humidit… LOESS      1
+#>  2 braga       humidity    parameter generalize… smoothin… humidit… to mi…     2
+#>  3 braga       temperature parameter generalize… smoothin… tempera… LOESS      3
+#>  4 braga       temperature parameter generalize… smoothin… tempera… to mi…     4
+#>  5 braga       time        parameter generalize… smoothin… time_pa… LOESS      5
+#>  6 braga       time        parameter generalize… smoothin… time_pa… to el…     6
+#>  7 katsouyanni humidity    parameter generalize… smoothin… humidit… LOESS      7
+#>  8 katsouyanni humidity    parameter generalize… smoothin… humidit… to mi…     8
+#>  9 katsouyanni humidity    temporal  generalize… <NA>      humidit… same …     9
+#> 10 katsouyanni temperature parameter generalize… smoothin… tempera… LOESS     10
+#> # ℹ 37 more rows
+pivot_decision_tbl_wider(paper_df)
+#> # A tibble: 6 × 17
+#>   paper       model                humidity_parameter_m…¹ humidity_parameter_r…²
+#>   <chr>       <chr>                <chr>                  <chr>                 
+#> 1 braga       generalized additiv… LOESS                  to minimize Akaike's …
+#> 2 katsouyanni generalized additiv… LOESS                  to minimize Akaike's …
+#> 3 ostro       Poisson regression   smoothing spline       <NA>                  
+#> 4 peel        Poisson generalized… <NA>                   <NA>                  
+#> 5 schwartz    Poisson regression   <NA>                   <NA>                  
+#> 6 zanobetti   generalized additiv… LOESS                  to minimize Akaike's …
+#> # ℹ abbreviated names: ¹​humidity_parameter_method, ²​humidity_parameter_reason
+#> # ℹ 13 more variables: humidity_parameter_decision <chr>,
+#> #   temperature_parameter_method <chr>, temperature_parameter_reason <chr>,
+#> #   temperature_parameter_decision <chr>, time_parameter_method <chr>,
+#> #   time_parameter_reason <chr>, time_parameter_decision <chr>,
+#> #   humidity_temporal_reason <chr>, humidity_temporal_decision <chr>,
+#> #   temperature_temporal_reason <chr>, temperature_temporal_decision <chr>, …
 ```
 
 ``` r
@@ -134,15 +165,15 @@ summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
 embed_df <- paper_df |> compute_text_embed()
 #> [0;34mProcessing batch 1/1
 #> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.332266 secs).
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 4.061170 secs).
 #> [0m
 #> [0;32mCompleted layers aggregation for word_type_embeddings. 
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.476213 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.610729 secs).
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.527775 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.439704 secs).
 #> [0m
-#> [0;32mMinutes from start:  0.143[0m
+#> [0;32mMinutes from start:  0.159[0m
 #> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))
@@ -180,14 +211,6 @@ embed_df <- paper_df |> compute_text_embed()
 #> 13 peel        schwartz    0.633       0.367
 #> 14 peel        zanobetti   0.825       0.175
 #> 15 schwartz    zanobetti   0.143       0.857
-# turn into a standard distance matrix
-to_dist_mtx(distance_df)
-#>                  braga katsouyanni      ostro       peel   schwartz
-#> katsouyanni 0.05780111                                             
-#> ostro       0.81790385  0.62691960                                 
-#> peel        1.00000000  0.78588531 0.54474610                      
-#> schwartz    0.10146916  0.14029528 0.56474610 0.63310631           
-#> zanobetti   0.05464868  0.07994514 0.68598039 0.82538338 0.14305712
 ```
 
 ## Diagnostics
@@ -209,22 +232,15 @@ diag_decision_ppp(distance_decision_df, distance_df)
 #> 7            8     1 0.0667      0.920
 view_pairs(paper_df, distance_decision_df, "braga", "zanobetti")
 #> Joining with `by = join_by(decision)`
-#> # A tibble: 15 × 4
-#>    decision                       braga                         zanobetti   dist
-#>    <chr>                          <chr>                         <chr>      <dbl>
-#>  1 humidity_parameter_method      LOESS                         LOESS      1    
-#>  2 humidity_parameter_reason      to minimize Akaike's Informa… to minim…  0.946
-#>  3 humidity_parameter_decision    <NA>                          <NA>      NA    
-#>  4 temperature_parameter_method   LOESS                         LOESS      1    
-#>  5 temperature_parameter_reason   to minimize Akaike's Informa… to minim…  0.946
-#>  6 temperature_parameter_decision <NA>                          <NA>      NA    
-#>  7 time_parameter_method          LOESS                         LOESS      1    
-#>  8 time_parameter_reason          to eliminate seasonal patter… to minim…  0.779
-#>  9 time_parameter_decision        <NA>                          <NA>      NA    
-#> 10 humidity_temporal_reason       <NA>                          <NA>      NA    
-#> 11 humidity_temporal_decision     <NA>                          previous… NA    
-#> 12 temperature_temporal_reason    <NA>                          <NA>      NA    
-#> 13 temperature_temporal_decision  <NA>                          previous… NA    
-#> 14 PM_temporal_reason             <NA>                          <NA>      NA    
-#> 15 PM_temporal_decision           <NA>                          <NA>      NA
+#> # A tibble: 8 × 4
+#>   decision                      braga                           zanobetti   dist
+#>   <chr>                         <chr>                           <chr>      <dbl>
+#> 1 humidity_parameter_method     LOESS                           LOESS      1    
+#> 2 humidity_parameter_reason     to minimize Akaike's Informati… to minim…  0.946
+#> 3 temperature_parameter_method  LOESS                           LOESS      1    
+#> 4 temperature_parameter_reason  to minimize Akaike's Informati… to minim…  0.946
+#> 5 time_parameter_method         LOESS                           LOESS      1    
+#> 6 time_parameter_reason         to eliminate seasonal patterns… to minim…  0.779
+#> 7 humidity_temporal_decision    <NA>                            previous… NA    
+#> 8 temperature_temporal_decision <NA>                            previous… NA
 ```
