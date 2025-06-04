@@ -145,15 +145,15 @@ count_paper_pair_decisions(paper_df)
 embed_df <- paper_df |> compute_text_embed()
 #> [0;34mProcessing batch 1/1
 #> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.614024 secs).
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.767509 secs).
 #> [0m
 #> [0;32mCompleted layers aggregation for word_type_embeddings. 
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.068682 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.051446 secs).
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.034339 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.005584 secs).
 #> [0m
-#> [0;32mMinutes from start:  0.164[0m
+#> [0;32mMinutes from start:  0.177[0m
 #> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))
@@ -197,9 +197,6 @@ embed_df <- paper_df |> compute_text_embed()
 
 ``` r
 diag_decision_ppp(distance_decision_df, distance_df)
-#> Joining with `by = join_by(paper1, paper2)`
-#> Storing counts in `nn`, as `n` already present in input
-#> Joining with `by = join_by(n)`
 #> # A tibble: 7 × 4
 #>   num_decision count   prop similarity
 #>          <int> <int>  <dbl>      <dbl>
