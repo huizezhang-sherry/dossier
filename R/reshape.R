@@ -82,13 +82,13 @@ pivot_var_type_wider <- function(df){
 #' @examples
 #' paper_vec <- c("braga", "katsouyanni", "ostro", "peel", "schwartz", "zanobetti")
 #' gen_paper_grid(paper_vec)
-gen_paper_grid <- function(x, new_names = c("paper1", "paper2"), ...){
+gen_paper_grid <- function(x, cols, new_names = c("paper1", "paper2"), ...){
   UseMethod("gen_paper_grid")
 }
 
 #' @export
 #' @rdname grid
-gen_paper_grid.character <- function(x, new_names = c("paper1", "paper2"), ...){
+gen_paper_grid.character <- function(x, cols, new_names = c("paper1", "paper2"), ...){
   res <- c(x) |> unique() |> utils::combn(2) |> t() |>
     tibble::as_tibble(.name_repair = "minimal")
 

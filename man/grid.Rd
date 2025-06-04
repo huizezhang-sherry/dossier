@@ -6,20 +6,20 @@
 \alias{gen_paper_grid.tbl_df}
 \title{Generate pairwise grid for papers}
 \usage{
-gen_paper_grid(x, new_names = c("paper1", "paper2"), ...)
+gen_paper_grid(x, cols, new_names = c("paper1", "paper2"), ...)
 
-\method{gen_paper_grid}{character}(x, new_names = c("paper1", "paper2"), ...)
+\method{gen_paper_grid}{character}(x, cols, new_names = c("paper1", "paper2"), ...)
 
 \method{gen_paper_grid}{tbl_df}(x, cols, new_names = c("paper1", "paper2"), ...)
 }
 \arguments{
 \item{x}{A character vector of paper names or a decision_tbl object.}
 
+\item{cols}{A character vector of column names to use for generating the grid. Used if a `decision_tbl` is provided.}
+
 \item{new_names}{A character vector of length 2 to name the resulting columns in the grid.}
 
 \item{...}{Optional.}
-
-\item{cols}{A character vector of column names to use for generating the grid. Used if a `decision_tbl` is provided.}
 }
 \value{
 A tibble with two columns containing unique pairs of paper names.
