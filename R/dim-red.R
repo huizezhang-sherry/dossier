@@ -41,14 +41,8 @@ run_hclust <- function(df, method = "ave"){
 #' @export
 #' @rdname dim-red
 run_mds <- function(df, paper_cols = c("paper1", "paper2")){
-
-  fml <- stats::reformulate(termlabels = paper_cols, response = "dist")
-  fml2 <- stats::reformulate(termlabels = rev(paper_cols), response = "dist")
-  t1 <- stats::xtabs(formula = fml, data = df)
-  t2 <- stats::xtabs(formula = fml2, data = df)
-  W <- t1 + t2
-  cmod <- stats::cmdscale(W)
-  tibble::tibble(paper = rownames(cmod)) |> dplyr::bind_cols(tibble::as_tibble(cmod))
+  cmod <- stats::cmdscale(to_dist_mtx(distance_df))
+  tibble::tibble(paper = rownames(cmod), V1 = cmod[,1], V2 = cmod[,2])
 
 }
 
