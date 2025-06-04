@@ -1,29 +1,27 @@
-#' Diagnose functions on paper similarity
+#' Diagnostics and inspection functions for paper similarity calculation
 #'
-#' @param decision_df A tibble with papers.
-#' @param distance_df A tibble with paper distance metrics.
+#' @param decision_df Output from `calc_decision_similarity`
+#' @param distance_df Output from `calc_paper_similarity`
 #'
 #' @returns
-#' Diagnostic summary of the count, proportion, and average similarity score
-#' for number of decisions per paper pair.
-#'
-#' Diagnostic summary of decisions similarity score for each paper pair.
+#' Diagnostic summary
 #'
 #' @export
 #' @rdname diagnose
 diag_decision_ppp <- function(decision_df, distance_df){
 
+  pp_cols <- attr(distance_df, "pp_cols")
   avg_similarity_score_df <- decision_df |>
-    dplyr::count(paper1, paper2, sort = TRUE) |>
-    dplyr::left_join(distance_df) |>
+    dplyr::count(!!!syms(pp_cols), sort = TRUE) |>
+    dplyr::left_join(distance_df, by = pp_cols) |>
     dplyr::group_by(n) |>
     dplyr::summarize(similarity = mean(1 - dist))
 
   decision_df |>
-    dplyr::count(paper1, paper2, sort = TRUE) |>
-    dplyr::count(n) |>
+    dplyr::count(!!!syms(pp_cols), sort = TRUE) |>
+    dplyr::count(n, name = "nn") |>
     dplyr::mutate(prop = nn/sum(nn)) |>
-    dplyr::left_join(avg_similarity_score_df) |>
+    dplyr::left_join(avg_similarity_score_df, by = "n") |>
     dplyr::rename(num_decision = n, count = nn)
 
 }
@@ -40,6 +38,7 @@ diag_decision_ppp <- function(decision_df, distance_df){
 #' @export
 #' @rdname diagnose
 view_pairs <- function(paper_df, decision_df, pp1, pp2){
+  # TODO verify pp1 and pp2 are in the grid
   res <- paper_df |>
     dplyr::filter(paper %in% c(pp1, pp2)) |>
     pivot_decision_tbl_longer() |>

@@ -47,28 +47,21 @@ This is a basic example which shows you how to solve a common problem:
 library(dossier)
 library(dplyr)
 library(text)
-(raw_df <- readr::read_csv(system.file("papers.csv", package = "dossier")))
-tbl_df <- to_decision_tbl(raw_df)
+raw_df <- readr::read_csv(system.file("papers.csv", package = "dossier"))
+(tbl_df <- as_decision_tbl(raw_df))
 ```
  
 ```{r}
 # select the variable-type pair to compare papers
-count_variable_type(tbl_df)
-df <- tbl_df |> filter_var_type(n = 6) # first 6 variable-type pairs
+count_variable_type(tbl_df) 
+(df <- tbl_df |> filter_var_type(n = 6)) # first 6 variable-type pairs
 
-# subset to papers with at least 3 decisions
-summarize_num_decisions_pp(df)
-paper_df <- df |> filter_papers(n_count = 3)
+# subset to papers with at least 3 decisions (include all)
+count_paper_decisions(df)
+(paper_df <- df |> filter_papers(n_value = 3))
 
-pivot_decision_tbl_longer(paper_df)
-pivot_decision_tbl_wider(paper_df)
+count_paper_pair_decisions(paper_df)
 ```
-
-```{r}
-summarize_decisions_ppp(paper_df)
-summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
-```
-
 
 
 ```{r}

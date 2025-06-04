@@ -43,7 +43,8 @@ This is a basic example which shows you how to solve a common problem:
 library(dossier)
 library(dplyr)
 library(text)
-(raw_df <- readr::read_csv(system.file("papers.csv", package = "dossier")))
+raw_df <- readr::read_csv(system.file("papers.csv", package = "dossier"))
+(tbl_df <- as_decision_tbl(raw_df))
 #> # A tibble: 35 × 8
 #>    paper       variable            type   model method parameter reason decision
 #>    <chr>       <chr>               <chr>  <chr> <chr>  <chr>     <chr>  <chr>   
@@ -58,14 +59,13 @@ library(text)
 #>  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… <NA>    
 #> 10 katsouyanni humidity            tempo… gene… <NA>   <NA>      <NA>   same da…
 #> # ℹ 25 more rows
-tbl_df <- to_decision_tbl(raw_df)
 ```
 
 ``` r
 # select the variable-type pair to compare papers
-count_variable_type(tbl_df)
+count_variable_type(tbl_df) 
 #> # A tibble: 11 × 3
-#>    variable            type          n
+#>    variable            type         .n
 #>    <chr>               <chr>     <int>
 #>  1 temperature         parameter     6
 #>  2 time                parameter     6
@@ -78,59 +78,50 @@ count_variable_type(tbl_df)
 #>  9 barometric_pressure spatial       1
 #> 10 humidity            spatial       1
 #> 11 temperature         spatial       1
-df <- tbl_df |> filter_var_type(n = 6) # first 6 variable-type pairs
+(df <- tbl_df |> filter_var_type(n = 6)) # first 6 variable-type pairs
+#> # A tibble: 26 × 8
+#>    paper       variable    type      model      method parameter reason decision
+#>    <chr>       <chr>       <chr>     <chr>      <chr>  <chr>     <chr>  <chr>   
+#>  1 braga       humidity    parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  2 braga       temperature parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  3 braga       time        parameter generaliz… LOESS  smoothin… to el… <NA>    
+#>  4 katsouyanni humidity    parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  5 katsouyanni humidity    temporal  generaliz… <NA>   <NA>      <NA>   same da…
+#>  6 katsouyanni temperature parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  7 katsouyanni temperature temporal  generaliz… <NA>   <NA>      <NA>   same da…
+#>  8 katsouyanni time        parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  9 ostro       PM          temporal  Poisson r… <NA>   <NA>      previ… 2-day a…
+#> 10 ostro       humidity    parameter Poisson r… smoot… smoothin… <NA>   3       
+#> # ℹ 16 more rows
 
-# subset to papers with at least 3 decisions
-summarize_num_decisions_pp(df)
-#> # A tibble: 6 × 2
-#>   paper       count
-#>   <chr>       <dbl>
-#> 1 ostro           6
-#> 2 katsouyanni     5
-#> 3 zanobetti       5
-#> 4 peel            4
-#> 5 braga           3
-#> 6 schwartz        3
-paper_df <- df |> filter_papers(n_count = 3)
+# subset to papers with at least 3 decisions (include all)
+count_paper_decisions(df)
+#>         paper .n
+#> 1       ostro 11
+#> 2 katsouyanni  8
+#> 3    schwartz  8
+#> 4   zanobetti  8
+#> 5       braga  6
+#> 6        peel  6
+(paper_df <- df |> filter_papers(n_value = 3))
+#> # A tibble: 26 × 8
+#>    paper       variable    type      model      method parameter reason decision
+#>    <chr>       <chr>       <chr>     <chr>      <chr>  <chr>     <chr>  <chr>   
+#>  1 braga       humidity    parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  2 braga       temperature parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  3 braga       time        parameter generaliz… LOESS  smoothin… to el… <NA>    
+#>  4 katsouyanni humidity    parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  5 katsouyanni humidity    temporal  generaliz… <NA>   <NA>      <NA>   same da…
+#>  6 katsouyanni temperature parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  7 katsouyanni temperature temporal  generaliz… <NA>   <NA>      <NA>   same da…
+#>  8 katsouyanni time        parameter generaliz… LOESS  smoothin… to mi… <NA>    
+#>  9 ostro       PM          temporal  Poisson r… <NA>   <NA>      previ… 2-day a…
+#> 10 ostro       humidity    parameter Poisson r… smoot… smoothin… <NA>   3       
+#> # ℹ 16 more rows
 
-pivot_decision_tbl_longer(paper_df)
-#> # A tibble: 47 × 8
-#>    paper       variable    type      model       parameter decision reason    id
-#>    <chr>       <chr>       <chr>     <chr>       <chr>     <chr>    <chr>  <int>
-#>  1 braga       humidity    parameter generalize… smoothin… humidit… LOESS      1
-#>  2 braga       humidity    parameter generalize… smoothin… humidit… to mi…     2
-#>  3 braga       temperature parameter generalize… smoothin… tempera… LOESS      3
-#>  4 braga       temperature parameter generalize… smoothin… tempera… to mi…     4
-#>  5 braga       time        parameter generalize… smoothin… time_pa… LOESS      5
-#>  6 braga       time        parameter generalize… smoothin… time_pa… to el…     6
-#>  7 katsouyanni humidity    parameter generalize… smoothin… humidit… LOESS      7
-#>  8 katsouyanni humidity    parameter generalize… smoothin… humidit… to mi…     8
-#>  9 katsouyanni humidity    temporal  generalize… <NA>      humidit… same …     9
-#> 10 katsouyanni temperature parameter generalize… smoothin… tempera… LOESS     10
-#> # ℹ 37 more rows
-pivot_decision_tbl_wider(paper_df)
-#> # A tibble: 6 × 17
-#>   paper       model                humidity_parameter_m…¹ humidity_parameter_r…²
-#>   <chr>       <chr>                <chr>                  <chr>                 
-#> 1 braga       generalized additiv… LOESS                  to minimize Akaike's …
-#> 2 katsouyanni generalized additiv… LOESS                  to minimize Akaike's …
-#> 3 ostro       Poisson regression   smoothing spline       <NA>                  
-#> 4 peel        Poisson generalized… <NA>                   <NA>                  
-#> 5 schwartz    Poisson regression   <NA>                   <NA>                  
-#> 6 zanobetti   generalized additiv… LOESS                  to minimize Akaike's …
-#> # ℹ abbreviated names: ¹​humidity_parameter_method, ²​humidity_parameter_reason
-#> # ℹ 13 more variables: humidity_parameter_decision <chr>,
-#> #   temperature_parameter_method <chr>, temperature_parameter_reason <chr>,
-#> #   temperature_parameter_decision <chr>, time_parameter_method <chr>,
-#> #   time_parameter_reason <chr>, time_parameter_decision <chr>,
-#> #   humidity_temporal_reason <chr>, humidity_temporal_decision <chr>,
-#> #   temperature_temporal_reason <chr>, temperature_temporal_decision <chr>, …
-```
-
-``` r
-summarize_decisions_ppp(paper_df)
-#> # A tibble: 15 × 3
-#>    paper1      paper2      pairs
+count_paper_pair_decisions(paper_df)
+#> # A data frame: 15 × 3
+#>    paper1      paper2         .n
 #>    <chr>       <chr>       <int>
 #>  1 braga       katsouyanni     6
 #>  2 braga       ostro           4
@@ -147,17 +138,6 @@ summarize_decisions_ppp(paper_df)
 #> 13 peel        schwartz        5
 #> 14 peel        zanobetti       3
 #> 15 schwartz    zanobetti       4
-summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
-#> # A tibble: 7 × 2
-#>   pairs     n
-#>   <int> <int>
-#> 1     2     1
-#> 2     3     2
-#> 3     4     4
-#> 4     5     1
-#> 5     6     5
-#> 6     7     1
-#> 7     8     1
 ```
 
 ``` r
@@ -165,15 +145,15 @@ summarize_decisions_ppp(paper_df) |> dplyr::count(pairs)
 embed_df <- paper_df |> compute_text_embed()
 #> [0;34mProcessing batch 1/1
 #> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 4.061170 secs).
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.614024 secs).
 #> [0m
 #> [0;32mCompleted layers aggregation for word_type_embeddings. 
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.610729 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.068682 secs).
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.439704 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.034339 secs).
 #> [0m
-#> [0;32mMinutes from start:  0.159[0m
+#> [0;32mMinutes from start:  0.164[0m
 #> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))

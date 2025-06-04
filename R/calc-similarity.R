@@ -1,34 +1,64 @@
-#' Calculate decision similarity
+#' Calculate decision and paper similarity score
 #'
-#' @param df A data frame.
+#' The `calc_decision_similarity` function presents text similarity score for
+#' matched decisions for each paper pair.`calc_paper_similarity` aggregates all
+#' the decision scores to produce similarity score for paper pairs.
+#'
+#' @param df A decision table object
 #' @param embed Optional. A text embedding object from `compute_text_embed()`.
-#' @param text_model A text model.
-#'
+#' @param text_model A text model.See `text::textEmbed()`
+#' @param new_names A character vector of length 2. The column names for the
+#' paper pairs. Default to `c("paper1", "paper2")`
+#' @param .f Optional. A function to aggregate decision similarity score to
+#' paper similarity score, defaults to `mean`.
+#' @param res The output from `calc_decision_similarity()`
 #' @returns
-#' A list of similarity scores between decision pairs
-#'
+#' A tibble object
 #' @export
 #' @rdname calc-similarity
-calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased"){
-  check_df_std(df)
+#' @examples
+#'\dontrun{
+#' library(text)
+#' library(readr)
+#' # preprocessing
+#' tbl_df <- readr::read_csv(system.file("papers.csv", package = "dossier")) |>
+#'   as_decision_tbl()
+#' paper_df <- tbl_df |>
+#'   filter_var_type(n = 6) |> # first 6 variable-type pairs
+#'   filter_papers(n_value = 3)
+#'
+#' # calculate the text embed
+#' embed_df <- paper_df |> compute_text_embed()
+#' # calculate decision similarity
+#' distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df)
+#' # aggregate from decision similarity to paper similarity
+#' distance_df <- distance_decision_df |> calc_paper_similarity()
+#'}
+
+calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-uncased",
+                                     new_names = c("paper1", "paper2")){
+
+  verify_df_std(df)
   long_df <- pivot_decision_tbl_longer(df)
 
   if (is.null(embed)) embed <- text::textEmbed(long_df$reason, model = text_model)
 
-  res_df <- gen_paper_grid(df, "paper")
+  res_df <- gen_paper_grid(df, "paper", new_names = new_names)
+  pp_cols <- attr(res_df, "pp_cols")
   res_df <- mapply(
-    function(x, y) decision_similarity_workhorse(x, y, long_df, embed),
-    res_df[["paper1"]], res_df[["paper2"]] , SIMPLIFY = FALSE
+    function(x, y) decision_similarity_workhorse(x, y, long_df, embed, pp_cols),
+    res_df[[pp_cols[[1]]]], res_df[[pp_cols[[2]]]] , SIMPLIFY = FALSE
     )
 
-  dplyr::bind_rows(res_df)
+  res <- dplyr::bind_rows(res_df)
+  res
 
 }
 
 #' @export
 #' @rdname calc-similarity
 compute_text_embed <- function(df, text_model ="bert-base-uncased"){
-  check_df_std(df)
+  verify_df_std(df)
   long_df <- pivot_decision_tbl_longer(df)
   embed <- text::textEmbed(long_df$reason, model = text_model)
   return(embed)
@@ -36,7 +66,7 @@ compute_text_embed <- function(df, text_model ="bert-base-uncased"){
 
 
 #' @keywords internal
-decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
+decision_similarity_workhorse <- function(paper1, paper2, long_df, embed, pp_cols){
     aa_split <- long_df |>
       dplyr::filter(paper %in% c(paper1, paper2)) |>
       dplyr::group_split(variable, type, decision)
@@ -62,17 +92,21 @@ decision_similarity_workhorse <- function(paper1, paper2, long_df, embed){
     res <- dplyr::bind_rows(res1, res2)
     if (nrow(res) == 0) res <- tibble(id1 = NA, id2 = NA, dist = NA)
 
-    res |>
+    res <- res |>
       dplyr::left_join(long_df |>
                          dplyr::select(paper, decision, id) |>
-                         dplyr::rename(paper1 = paper),
+                         dplyr::rename(!!pp_cols[[1]] := paper),
                 by = c("id1" = "id")) |>
       dplyr::left_join(long_df |>
                          dplyr::select(paper, id) |>
-                         dplyr::rename(paper2 = paper),
+                         dplyr::rename(!!pp_cols[[2]] := paper),
                 by = c("id2" = "id")) |>
-      dplyr::select(paper1, paper2, decision, dist) |>
+      dplyr::select(!!pp_cols, decision, dist) |>
       dplyr::filter(!is.na(dist))
+
+    class(res) <- c("paper_grid_df", class(res))
+    attr(res, "pp_cols") <- pp_cols
+    return(res)
 }
 
 #' @keywords internal
@@ -99,37 +133,29 @@ process_reason_others <- function(df, embed){
                                 embed$texts$texts[df$id[2], ]))
 }
 
-#' Calculate paper similarity scores
-#'
-#' @param res A data frame containing paper comparison results with columns `paper1`, `paper2`, and `dist`.
-#' @param .f Optional. A function to aggregate distances, defaults to `mean`.
-#'
-#' @returns
-#' A data frame containing pairwise paper similarity scores, with columns `paper1`,
-#' `paper2`, and `dist`. Papers with no comparison data are assigned a distance of 1.
-#'
 #' @export
 #' @rdname calc-similarity
 calc_paper_similarity <- function(res, .f = mean) {
+
+  verify_df_pp_grid(res)
+  pp_cols <- attr(res, "pp_cols")
   comparison_long <- res |>
-    dplyr::group_by(paper1, paper2) |>
+    dplyr::group_by(!!!syms(pp_cols)) |>
     dplyr::summarise(dist = 1 - do.call(.f, list(dist))) |>
     dplyr::ungroup()
 
-  papers <- as.vector(unique(c(res$paper1, res$paper2)))
-  gen_paper_grid(res, cols = c("paper1", "paper2")) |>
-    dplyr::mutate(id = paste0(paper1, "-", paper2)) |>
+  comparison_long |>
+    gen_paper_grid(cols = pp_cols) |>
+    dplyr::mutate(id = paste0(!!sym(pp_cols[1]), "-", !!sym(pp_cols[2]))) |>
     dplyr::left_join(comparison_long |>
-                       mutate(id = paste0(paper1, "-", paper2)) |>
-                       select(id, dist), by = "id") |>
+                       dplyr::mutate(id = paste0(!!sym(pp_cols[1]), "-", !!sym(pp_cols[2]))) |>
+                       dplyr::select(id, dist), by = "id") |>
     dplyr::left_join(comparison_long |>
-                       mutate(id2 = paste0(paper2, "-", paper1)) |>
-                       select(id2, dist), by = c("id" = "id2")) |>
+                       dplyr::mutate(id2 = paste0(!!sym(pp_cols[2]), "-", !!sym(pp_cols[1]))) |>
+                       dplyr::select(id2, dist), by = c("id" = "id2")) |>
     dplyr::mutate(dist = dplyr::coalesce(dist.x, dist.y)) |>
     dplyr::mutate(dist = ifelse(is.na(dist), 1, dist)) |>
-    dplyr::mutate(dplyr::across(paper1:paper2, as.factor),
-           paper1 = factor(paper1, levels = papers),
-           paper2 = factor(paper2, levels = papers)
+    dplyr::mutate(dplyr::across(pp_cols, as.factor)
     ) |>
     dplyr::select(-c(id, dist.x, dist.y)) |>
     dplyr::mutate(similarity = 1 - dist)
@@ -140,4 +166,5 @@ globalVariables(c("paper", "model", "variable", "method", "parameter",
                   "type", "reason", "decision", "id", "paper1", "paper2",
                   "dist", "id2", "dist.x", "dist.y", "item", "embed_df",
                   "distance_decision_df", "count", "a", "variable_type",
-                  "n", "df", "nn", "ave_similarity_score_df", "dist_df"))
+                  "n", "df", "nn", "ave_similarity_score_df", "dist_df", ".n",
+                  "distance_df"))

@@ -1,6 +1,6 @@
 test_that("multiplication works", {
   raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
-  df <- to_decision_tbl(raw_df)
+  df <- as_decision_tbl(raw_df)
 
   expect_equal(class(df)[1], "decision_tbl")
   expect_equal(class(pivot_var_type_wider(df))[1], "decision_tbl")

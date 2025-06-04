@@ -7,12 +7,11 @@ reference:
   desc:
   contents:
    - extract_decisions
-   - clean_md
-   - to_decision_tbl
+   - as_decision_tbl
 - title: "Pre-process"
   desc:
   contents:
-   - count_variable_type
+   - filter_papers
    - summarize_num_decisions_pp
 - title: "Calculate paper similarity and diagnostics"
   desc:

@@ -2,9 +2,9 @@
 % Please edit documentation in R/llm.R
 \name{extract_decisions}
 \alias{extract_decisions}
-\title{Summarize PDF via LLM}
+\title{Extract decisions from PDF inputs via LLM}
 \usage{
-extract_decisions(prompt_file, pdf, file = NULL, ..., llm_model = "claude")
+extract_decisions(prompt_file, pdf, file = NULL, ..., llm_model = "gemini")
 }
 \arguments{
 \item{prompt_file}{A single string containing the prompt}
@@ -16,16 +16,18 @@ it saves a markdown file with the same name as the PDF file in the same director
 
 \item{...}{other arguments supplied to the LLM chat function, such as `seed`, `temperature`, etc.}
 
-\item{llm_model}{One of `"claude"` or `"gemini"` for processing pdf documents. Default to `"claude"`}
+\item{llm_model}{One of `"claude"` or `"gemini"` for processing pdf documents. Default to `gemini`}
 }
 \value{
 Writes output to the specified file.
 }
 \description{
-The output from LLM may contains additional notes about the process,
-unexpected line breaks, etc. We recommend capturing the output in a markdown
-file and instruct the LLM to write the output in a json block. Use the function
-[clean_md] to extract the decisions from the JSON block.
+The function writes a markdown file at the `file` location with the decisions
+extracted from the PDF inputs via the LLM. The decisions are  formatted as a
+JSON block. See the LLM prompt file
+`system.file("prompt.md", package = "dossier") |> readLines()` for more
+details. To setup the authentication for the LLM, please refer to the
+`ellmer` package.
 }
 \seealso{
 [clean_md]

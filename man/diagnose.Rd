@@ -3,7 +3,7 @@
 \name{diag_decision_ppp}
 \alias{diag_decision_ppp}
 \alias{view_pairs}
-\title{Diagnose functions on paper similarity}
+\title{Diagnostics and inspection functions for paper similarity calculation}
 \usage{
 diag_decision_ppp(decision_df, distance_df)
 
@@ -12,22 +12,19 @@ view_pairs(paper_df, decision_df, pp1, pp2)
 \arguments{
 \item{decision_df}{A data frame containing item-level distances}
 
-\item{distance_df}{A tibble with paper distance metrics.}
+\item{distance_df}{Output from `calc_paper_similarity`}
 
 \item{paper_df}{A data frame containing paper codings}
 
 \item{pp1, pp2}{A single string each to identify the two papers}
 }
 \value{
-Diagnostic summary of the count, proportion, and average similarity score
-for number of decisions per paper pair.
-
-Diagnostic summary of decisions similarity score for each paper pair.
+Diagnostic summary
 
 A data frame containing decision-level comparisons between the two papers.
 }
 \description{
-Diagnose functions on paper similarity
+Diagnostics and inspection functions for paper similarity calculation
 
 View the coding detail for a pair of papers
 }

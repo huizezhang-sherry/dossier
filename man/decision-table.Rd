@@ -10,7 +10,7 @@ pivot_decision_tbl_wider(df)
 pivot_decision_tbl_longer(df)
 }
 \arguments{
-\item{df}{A decision_tbl object created by `to_decision_tbl`}
+\item{df}{A decision_tbl object created by `as_decision_tbl`}
 }
 \value{
 A data frame in wide format with decisions split across columns.
@@ -22,7 +22,7 @@ pivots all the columns, except paper and model, to the long format.
 }
 \examples{
 raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
-tbl_df <- to_decision_tbl(raw_df)
+tbl_df <- as_decision_tbl(raw_df)
 pivot_decision_tbl_wider(tbl_df)
 pivot_decision_tbl_longer(tbl_df)
 }

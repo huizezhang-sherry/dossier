@@ -4,7 +4,7 @@
 #' paper per row and each column as a decision. `pivot_decision_tbl_longer`
 #' pivots all the columns, except paper and model, to the long format.
 #'
-#' @param df A decision_tbl object created by `to_decision_tbl`
+#' @param df A decision_tbl object created by `as_decision_tbl`
 #'
 #' @returns
 #' A data frame in wide format with decisions split across columns.
@@ -13,12 +13,12 @@
 #' @rdname decision-table
 #' @examples
 #' raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
-#' tbl_df <- to_decision_tbl(raw_df)
+#' tbl_df <- as_decision_tbl(raw_df)
 #' pivot_decision_tbl_wider(tbl_df)
 #' pivot_decision_tbl_longer(tbl_df)
 pivot_decision_tbl_wider <- function(df){
 
-  check_decision_tbl(df)
+  verify_decision_tbl(df)
   df <- df |> dplyr::mutate(variable_type = paste0(variable, "_", type))
   res <- df |>
     tidyr::pivot_wider(id_cols = -c(parameter, variable_type),
@@ -37,7 +37,7 @@ pivot_decision_tbl_wider <- function(df){
 #' @export
 #' @rdname decision-table
 pivot_decision_tbl_longer <- function(df){
-  check_df_std(df)
+  verify_df_std(df)
 
   res <- df |>
     dplyr::mutate(dplyr::across(-c(paper, model), as.character)) |>
@@ -53,7 +53,7 @@ pivot_decision_tbl_longer <- function(df){
 #' @keywords internal
 pivot_var_type_wider <- function(df){
 
-  check_decision_tbl(df)
+  verify_decision_tbl(df)
   res <- df |>
     dplyr::mutate(variable_type = paste0(variable, "_", type)) |>
     dplyr::mutate(a = paste0(reason, decision)) |>
@@ -96,6 +96,8 @@ gen_paper_grid.character <- function(x, new_names = c("paper1", "paper2"), ...){
     cli::cli_abort("The {.arg new_names} argument must have length 2, not {new_names}.")
   }
   colnames(res) <- new_names
+  class(res) <- c("paper_grid_df", class(res))
+  attr(res, "pp_cols") <- new_names
   return(res)
 }
 
@@ -107,4 +109,10 @@ gen_paper_grid.tbl_df <- function(x, cols, new_names = c("paper1", "paper2"), ..
   vec <- c(unname(sapply(cols, function(col) unique(as.character(x[[col]])), simplify = TRUE)))
 
   gen_paper_grid.character(vec, new_names = new_names)
+}
+
+verify_df_pp_grid <- function(x){
+  if (!inherits(x, "paper_grid_df")){
+    cli::cli_abort("An {.field paper_grid_df} object is required as the input, please check.")
+  }
 }

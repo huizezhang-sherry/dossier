@@ -6,6 +6,7 @@
 #' @importFrom purrr map2 map2_dfr
 #' @importFrom cli cli_abort
 #' @importFrom dplyr filter mutate select rowwise ungroup summarise group_by arrange bind_cols across
+#' @importFrom rlang sym syms `:=`
 #' @keywords internal
 "_PACKAGE"
 

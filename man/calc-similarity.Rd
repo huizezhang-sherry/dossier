@@ -4,33 +4,58 @@
 \alias{calc_decision_similarity}
 \alias{compute_text_embed}
 \alias{calc_paper_similarity}
-\title{Calculate decision similarity}
+\title{Calculate decision and paper similarity score}
 \usage{
-calc_decision_similarity(df, embed = NULL, text_model = "bert-base-uncased")
+calc_decision_similarity(
+  df,
+  embed = NULL,
+  text_model = "bert-base-uncased",
+  new_names = c("paper1", "paper2")
+)
 
 compute_text_embed(df, text_model = "bert-base-uncased")
 
 calc_paper_similarity(res, .f = mean)
 }
 \arguments{
-\item{df}{A data frame.}
+\item{df}{A decision table object}
 
 \item{embed}{Optional. A text embedding object from `compute_text_embed()`.}
 
-\item{text_model}{A text model.}
+\item{text_model}{A text model.See `text::textEmbed()`}
 
-\item{res}{A data frame containing paper comparison results with columns `paper1`, `paper2`, and `dist`.}
+\item{new_names}{A character vector of length 2. The column names for the
+paper pairs. Default to `c("paper1", "paper2")`}
 
-\item{.f}{Optional. A function to aggregate distances, defaults to `mean`.}
+\item{res}{The output from `calc_decision_similarity()`}
+
+\item{.f}{Optional. A function to aggregate decision similarity score to
+paper similarity score, defaults to `mean`.}
 }
 \value{
-A list of similarity scores between decision pairs
-
-A data frame containing pairwise paper similarity scores, with columns `paper1`,
-`paper2`, and `dist`. Papers with no comparison data are assigned a distance of 1.
+A tibble object
 }
 \description{
-Calculate decision similarity
+The `calc_decision_similarity` function presents text similarity score for
+matched decisions for each paper pair.`calc_paper_similarity` aggregates all
+the decision scores to produce similarity score for paper pairs.
+}
+\examples{
+\dontrun{
+library(text)
+library(readr)
+# preprocessing
+tbl_df <- readr::read_csv(system.file("papers.csv", package = "dossier")) |>
+  as_decision_tbl()
+paper_df <- tbl_df |>
+  filter_var_type(n = 6) |> # first 6 variable-type pairs
+  filter_papers(n_value = 3)
 
-Calculate paper similarity scores
+# calculate the text embed
+embed_df <- paper_df |> compute_text_embed()
+# calculate decision similarity
+distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df)
+# aggregate from decision similarity to paper similarity
+distance_df <- distance_decision_df |> calc_paper_similarity()
+}
 }

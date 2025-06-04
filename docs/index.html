@@ -104,7 +104,7 @@
 <span><span class="co">#&gt;  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
 <span><span class="co">#&gt; 10 katsouyanni humidity            tempo… gene… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
 <span><span class="co">#&gt; # ℹ 25 more rows</span></span>
-<span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/class.html">to_decision_tbl</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu">to_decision_tbl</span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select the variable-type pair to compare papers</span></span>
 <span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span></span>
@@ -122,7 +122,7 @@
 <span><span class="co">#&gt;  9 barometric_pressure spatial       1</span></span>
 <span><span class="co">#&gt; 10 humidity            spatial       1</span></span>
 <span><span class="co">#&gt; 11 temperature         spatial       1</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">tbl_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_var_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">tbl_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/filter.html">filter_var_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
 <span></span>
 <span><span class="co"># subset to papers with at least 3 decisions</span></span>
 <span><span class="fu"><a href="reference/summarize.html">summarize_num_decisions_pp</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
@@ -135,7 +135,7 @@
 <span><span class="co">#&gt; 4 peel            4</span></span>
 <span><span class="co">#&gt; 5 braga           3</span></span>
 <span><span class="co">#&gt; 6 schwartz        3</span></span>
-<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/filter.html">filter_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/decision-table.html">pivot_decision_tbl_longer</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 47 × 8</span></span>

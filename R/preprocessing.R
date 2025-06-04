@@ -1,85 +1,43 @@
-#' Summarize number of decisions per paper
+#' Subset the decision table by the most common variable-type and the paper
 #'
-#' @param df A data frame.
-#' @param df_wide A data frame.
-#' @param sort Optional. A logical indicating whether to sort results by count in descending order.
-#' @param n Optional. A numeric value.
-#' @param n_value Optional. A numeric value.
-#' @param n_paper Optional. A numeric value.
-#' @param n_count Optional. A numeric value.
-
-#' @returns
-#' A data frame containing papers and their decision counts.
+#' To ensure a reasonable computation on paper similarity, [filter_var_type()]
+#' allows you to subset the decision table by the most
+#' common variable/ type combinations among all papers. [filter_papers()]
+#' allows you to subset the paper with at least x decisions or the top x papers
+#' with the most decisions.
+#'
+#' @param df The decision table object
+#' @param n Optional. A numeric value indicating the number of papers to keep.
+#' @param n_value Optional. A numeric value indicating the minimum number of decisions a paper must have to be kept.
 #'
 #' @export
-#' @rdname summarize
-summarize_num_decisions_pp <- function(df, sort = TRUE){
+#' @rdname filter
+#' @examples
+#' raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
+#' tbl_df <- as_decision_tbl(raw_df)
+#' df <- tbl_df |> filter_var_type(n = 6)
+#' df2 <- tbl_df |> filter_var_type(n_value = 3)
+#' identical(df, df2)
+filter_papers <- function(df, n = NULL, n_value = NULL){
+  verify_df_std(df)
+  count_summary <- count_paper_decisions(df)
 
-  df_wide_var_type <- pivot_var_type_wider(df)
-  vars <- colnames(df_wide_var_type)[-c(1,2)]
-  res <- summarize_variable_binary(df_wide_var_type) |>
-    dplyr::transmute(paper, count = rowSums(dplyr::across(vars)))
-
-  if (sort) res <- res |> arrange(-count)
-  return(res)
-}
-
-
-#' @export
-#' @rdname summarize
-filter_papers <- function(df, n_paper = NULL, n_count = NULL){
-  count_summary <- summarize_num_decisions_pp(df)
-
-  if (is.null(n_paper) && is.null(n_count)){
-    n_paper <- nrow(count_summary)
-    cli::cli_alert_info("Using all {n_paper} papers.")
+  if (is.null(n) && is.null(n_value)){
+    n <- nrow(count_summary)
+    cli::cli_alert_info("Using all {n} papers.")
     cli::cli_alert_info("Using {.fn summarize_num_decisions_pp} to choose {.arg n_paper} or {.arg n_count}.")
   }
 
-  if (!is.null(n_paper)) good_papers <- count_summary |> dplyr::slice_head(n = n_paper)
-  if (!is.null(n_count)) good_papers <- count_summary |> dplyr::filter(count >= n_count)
+  if (!is.null(n)) good_papers <- count_summary |> dplyr::slice_head(n = n)
+  if (!is.null(n_value)) good_papers <- count_summary |> dplyr::filter(.n >= n_value)
 
   df |> dplyr::filter(paper %in% good_papers$paper)
 }
 
-#' @param paper_df A data frame containing paper codings
 #' @export
-#' @rdname summarize
-summarize_decisions_ppp <- function(paper_df){
-  df <- paper_df |> pivot_decision_tbl_longer()
-  gen_paper_grid(paper_df, "paper") |>
-    dplyr::rowwise() |>
-    dplyr::mutate(pairs = length(intersect(
-      df |> dplyr::filter(paper == paper1) |> dplyr::pull(decision),
-      df |> dplyr::filter(paper == paper2) |> dplyr::pull(decision))
-    )) |>
-    dplyr::ungroup()
-}
-
-
-
-#' @export
-#' @rdname summarize
+#' @rdname filter
 filter_var_type <- function(df, n = NULL, n_value = NULL){
-
-  items <- create_good_variables(df, n = n, n_value = n_value)
-  df |>
-    dplyr::mutate(variable_type = paste0(variable, "_", type)) |>
-    dplyr::filter(variable_type %in% items) |>
-    dplyr::select(-variable_type)
-}
-
-#' @export
-#' @rdname summarize
-count_variable_type <- function(df){
-  df |>
-    dplyr::count(variable, type, sort = TRUE) |>
-    dplyr::filter(variable != "model")
-}
-
-#' @export
-#' @rdname summarize
-create_good_variables <- function(df, n = NULL, n_value = NULL){
+  verify_df_std(df)
   res <- df |> count_variable_type()
 
   if (is.null(n) && is.null(n_value)){
@@ -89,19 +47,87 @@ create_good_variables <- function(df, n = NULL, n_value = NULL){
   }
 
   if (!is.null(n)) res <- res |> dplyr::slice_head(n = n)
-  if (!is.null(n_value)) res <- res |> dplyr::filter(n >= n_value)
+  if (!is.null(n_value)) res <- res |> dplyr::filter(.n >= n_value)
 
-  res |>
+  items <- res |>
     dplyr::transmute(id = paste0(variable, "_", type)) |>
     dplyr::pull(id)
+
+  df |>
+    dplyr::mutate(variable_type = paste0(variable, "_", type)) |>
+    dplyr::filter(variable_type %in% items) |>
+    dplyr::select(-variable_type)
+}
+
+#' Small functions to summarize the decision table for pre-processing
+#'
+#' @param df The decision table object.
+#' @param sort A logical indicating whether to sort results by count in
+#' descending order.Default to `TRUE`
+#'
+#' @returns
+#' A data frame containing papers and their decision counts.
+#'
+#' @export
+#' @rdname summarize
+#' @examples
+#' raw_df <- read.csv(system.file("papers.csv", package = "dossier")) |> tibble::as_tibble()
+#' df <- as_decision_tbl(raw_df)
+#' count_paper_decisions(df)
+#' count_variable_type(df)
+#' df |> filter_var_type(n = 6) |> count_paper_pair_decisions()
+count_paper_decisions <- function(df, sort = TRUE){
+
+  verify_df_std(df)
+  res <- skim_variable_binary(df) |>
+    dplyr::transmute(paper, .n = rowSums(dplyr::across(-c(paper, model))))
+
+  if (sort) res <- res |> arrange(-.n)
+  class(res) <- class(res)[-1]
+  res
 }
 
 #' @export
 #' @rdname summarize
-summarize_variable_binary <- function(df_wide){
-  # only take wide format for now
-  df_wide |>
+count_paper_pair_decisions <- function(df){
+  verify_df_std(df)
+  df_long <- df |> pivot_decision_tbl_longer()
+  res <- gen_paper_grid(df, "paper") |>
     dplyr::rowwise() |>
-    dplyr::mutate(dplyr::across(colnames(df_wide)[-c(1,2)], ~ifelse(is.na(.x), 0, 1))) |>
+    dplyr::mutate(.n = length(intersect(
+      df_long |> dplyr::filter(paper == paper1) |> dplyr::pull(decision),
+      df_long |> dplyr::filter(paper == paper2) |> dplyr::pull(decision))
+    )) |>
     dplyr::ungroup()
+
+  class(res) <- class(res)[-1]
+  res
+}
+
+
+#' @export
+#' @rdname summarize
+count_variable_type <- function(df, sort = TRUE){
+  verify_df_std(df)
+  res <- df |>
+    dplyr::count(variable, type, sort = TRUE, name = ".n") |>
+    dplyr::filter(variable != "model")
+
+  class(res) <- class(res)[-1]
+  res
+}
+
+
+#' @export
+#' @rdname summarize
+skim_variable_binary <- function(df){
+  verify_df_std(df)
+  res <- df |>
+    pivot_decision_tbl_wider() |>
+    dplyr::rowwise() |>
+    dplyr::mutate(dplyr::across(-c(paper, model), ~ifelse(is.na(.x), 0, 1))) |>
+    dplyr::ungroup()
+
+  class(res) <- class(res)[-1]
+  res
 }
