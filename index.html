@@ -89,7 +89,8 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/huizezhang-sherry/dossier" class="external-link">dossier</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-text.org/" class="external-link">text</a></span><span class="op">)</span></span>
-<span><span class="op">(</span><span class="va">raw_df</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"papers.csv"</span>, package <span class="op">=</span> <span class="st">"dossier"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">raw_df</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"papers.csv"</span>, package <span class="op">=</span> <span class="st">"dossier"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">(</span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/class.html">as_decision_tbl</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 35 × 8</span></span>
 <span><span class="co">#&gt;    paper       variable            type   model method parameter reason decision</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;               &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;   </span></span>
@@ -103,13 +104,12 @@
 <span><span class="co">#&gt;  8 braga       time                spati… gene… &lt;NA&gt;   &lt;NA&gt;      seaso… chosen …</span></span>
 <span><span class="co">#&gt;  9 katsouyanni humidity            param… gene… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
 <span><span class="co">#&gt; 10 katsouyanni humidity            tempo… gene… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
-<span><span class="co">#&gt; # ℹ 25 more rows</span></span>
-<span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/class.html">to_decision_tbl</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 25 more rows</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select the variable-type pair to compare papers</span></span>
-<span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/summarize.html">count_variable_type</a></span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; # A tibble: 11 × 3</span></span>
-<span><span class="co">#&gt;    variable            type          n</span></span>
+<span><span class="co">#&gt;    variable            type         .n</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;               &lt;chr&gt;     &lt;int&gt;</span></span>
 <span><span class="co">#&gt;  1 temperature         parameter     6</span></span>
 <span><span class="co">#&gt;  2 time                parameter     6</span></span>
@@ -122,57 +122,50 @@
 <span><span class="co">#&gt;  9 barometric_pressure spatial       1</span></span>
 <span><span class="co">#&gt; 10 humidity            spatial       1</span></span>
 <span><span class="co">#&gt; 11 temperature         spatial       1</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">tbl_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_var_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
+<span><span class="op">(</span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">tbl_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/filter.html">filter_var_type</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span> <span class="co"># first 6 variable-type pairs</span></span>
+<span><span class="co">#&gt; # A tibble: 26 × 8</span></span>
+<span><span class="co">#&gt;    paper       variable    type      model      method parameter reason decision</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 braga       humidity    parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  2 braga       temperature parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  3 braga       time        parameter generaliz… LOESS  smoothin… to el… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  4 katsouyanni humidity    parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  5 katsouyanni humidity    temporal  generaliz… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
+<span><span class="co">#&gt;  6 katsouyanni temperature parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  7 katsouyanni temperature temporal  generaliz… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
+<span><span class="co">#&gt;  8 katsouyanni time        parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  9 ostro       PM          temporal  Poisson r… &lt;NA&gt;   &lt;NA&gt;      previ… 2-day a…</span></span>
+<span><span class="co">#&gt; 10 ostro       humidity    parameter Poisson r… smoot… smoothin… &lt;NA&gt;   3       </span></span>
+<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
 <span></span>
-<span><span class="co"># subset to papers with at least 3 decisions</span></span>
-<span><span class="fu"><a href="reference/summarize.html">summarize_num_decisions_pp</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
-<span><span class="co">#&gt;   paper       count</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;       &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 ostro           6</span></span>
-<span><span class="co">#&gt; 2 katsouyanni     5</span></span>
-<span><span class="co">#&gt; 3 zanobetti       5</span></span>
-<span><span class="co">#&gt; 4 peel            4</span></span>
-<span><span class="co">#&gt; 5 braga           3</span></span>
-<span><span class="co">#&gt; 6 schwartz        3</span></span>
-<span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/summarize.html">filter_papers</a></span><span class="op">(</span>n_count <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co"># subset to papers with at least 3 decisions (include all)</span></span>
+<span><span class="fu"><a href="reference/summarize.html">count_paper_decisions</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         paper .n</span></span>
+<span><span class="co">#&gt; 1       ostro 11</span></span>
+<span><span class="co">#&gt; 2 katsouyanni  8</span></span>
+<span><span class="co">#&gt; 3    schwartz  8</span></span>
+<span><span class="co">#&gt; 4   zanobetti  8</span></span>
+<span><span class="co">#&gt; 5       braga  6</span></span>
+<span><span class="co">#&gt; 6        peel  6</span></span>
+<span><span class="op">(</span><span class="va">paper_df</span> <span class="op">&lt;-</span> <span class="va">df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/filter.html">filter_papers</a></span><span class="op">(</span>n_value <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 26 × 8</span></span>
+<span><span class="co">#&gt;    paper       variable    type      model      method parameter reason decision</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;   </span></span>
+<span><span class="co">#&gt;  1 braga       humidity    parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  2 braga       temperature parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  3 braga       time        parameter generaliz… LOESS  smoothin… to el… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  4 katsouyanni humidity    parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  5 katsouyanni humidity    temporal  generaliz… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
+<span><span class="co">#&gt;  6 katsouyanni temperature parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  7 katsouyanni temperature temporal  generaliz… &lt;NA&gt;   &lt;NA&gt;      &lt;NA&gt;   same da…</span></span>
+<span><span class="co">#&gt;  8 katsouyanni time        parameter generaliz… LOESS  smoothin… to mi… &lt;NA&gt;    </span></span>
+<span><span class="co">#&gt;  9 ostro       PM          temporal  Poisson r… &lt;NA&gt;   &lt;NA&gt;      previ… 2-day a…</span></span>
+<span><span class="co">#&gt; 10 ostro       humidity    parameter Poisson r… smoot… smoothin… &lt;NA&gt;   3       </span></span>
+<span><span class="co">#&gt; # ℹ 16 more rows</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/decision-table.html">pivot_decision_tbl_longer</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 47 × 8</span></span>
-<span><span class="co">#&gt;    paper       variable    type      model       parameter decision reason    id</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;  &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1 braga       humidity    parameter generalize… smoothin… humidit… LOESS      1</span></span>
-<span><span class="co">#&gt;  2 braga       humidity    parameter generalize… smoothin… humidit… to mi…     2</span></span>
-<span><span class="co">#&gt;  3 braga       temperature parameter generalize… smoothin… tempera… LOESS      3</span></span>
-<span><span class="co">#&gt;  4 braga       temperature parameter generalize… smoothin… tempera… to mi…     4</span></span>
-<span><span class="co">#&gt;  5 braga       time        parameter generalize… smoothin… time_pa… LOESS      5</span></span>
-<span><span class="co">#&gt;  6 braga       time        parameter generalize… smoothin… time_pa… to el…     6</span></span>
-<span><span class="co">#&gt;  7 katsouyanni humidity    parameter generalize… smoothin… humidit… LOESS      7</span></span>
-<span><span class="co">#&gt;  8 katsouyanni humidity    parameter generalize… smoothin… humidit… to mi…     8</span></span>
-<span><span class="co">#&gt;  9 katsouyanni humidity    temporal  generalize… &lt;NA&gt;      humidit… same …     9</span></span>
-<span><span class="co">#&gt; 10 katsouyanni temperature parameter generalize… smoothin… tempera… LOESS     10</span></span>
-<span><span class="co">#&gt; # ℹ 37 more rows</span></span>
-<span><span class="fu"><a href="reference/decision-table.html">pivot_decision_tbl_wider</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 17</span></span>
-<span><span class="co">#&gt;   paper       model                humidity_parameter_m…¹ humidity_parameter_r…²</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;                &lt;chr&gt;                  &lt;chr&gt;                 </span></span>
-<span><span class="co">#&gt; 1 braga       generalized additiv… LOESS                  to minimize Akaike's …</span></span>
-<span><span class="co">#&gt; 2 katsouyanni generalized additiv… LOESS                  to minimize Akaike's …</span></span>
-<span><span class="co">#&gt; 3 ostro       Poisson regression   smoothing spline       &lt;NA&gt;                  </span></span>
-<span><span class="co">#&gt; 4 peel        Poisson generalized… &lt;NA&gt;                   &lt;NA&gt;                  </span></span>
-<span><span class="co">#&gt; 5 schwartz    Poisson regression   &lt;NA&gt;                   &lt;NA&gt;                  </span></span>
-<span><span class="co">#&gt; 6 zanobetti   generalized additiv… LOESS                  to minimize Akaike's …</span></span>
-<span><span class="co">#&gt; # ℹ abbreviated names: ¹​humidity_parameter_method, ²​humidity_parameter_reason</span></span>
-<span><span class="co">#&gt; # ℹ 13 more variables: humidity_parameter_decision &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   temperature_parameter_method &lt;chr&gt;, temperature_parameter_reason &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   temperature_parameter_decision &lt;chr&gt;, time_parameter_method &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   time_parameter_reason &lt;chr&gt;, time_parameter_decision &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   humidity_temporal_reason &lt;chr&gt;, humidity_temporal_decision &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   temperature_temporal_reason &lt;chr&gt;, temperature_temporal_decision &lt;chr&gt;, …</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/summarize.html">summarize_decisions_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 15 × 3</span></span>
-<span><span class="co">#&gt;    paper1      paper2      pairs</span></span>
+<span><span class="fu"><a href="reference/summarize.html">count_paper_pair_decisions</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A data frame: 15 × 3</span></span>
+<span><span class="co">#&gt;    paper1      paper2         .n</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;       &lt;int&gt;</span></span>
 <span><span class="co">#&gt;  1 braga       katsouyanni     6</span></span>
 <span><span class="co">#&gt;  2 braga       ostro           4</span></span>
@@ -188,32 +181,21 @@
 <span><span class="co">#&gt; 12 ostro       zanobetti       6</span></span>
 <span><span class="co">#&gt; 13 peel        schwartz        5</span></span>
 <span><span class="co">#&gt; 14 peel        zanobetti       3</span></span>
-<span><span class="co">#&gt; 15 schwartz    zanobetti       4</span></span>
-<span><span class="fu"><a href="reference/summarize.html">summarize_decisions_ppp</a></span><span class="op">(</span><span class="va">paper_df</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">pairs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 7 × 2</span></span>
-<span><span class="co">#&gt;   pairs     n</span></span>
-<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1     2     1</span></span>
-<span><span class="co">#&gt; 2     3     2</span></span>
-<span><span class="co">#&gt; 3     4     4</span></span>
-<span><span class="co">#&gt; 4     5     1</span></span>
-<span><span class="co">#&gt; 5     6     5</span></span>
-<span><span class="co">#&gt; 6     7     1</span></span>
-<span><span class="co">#&gt; 7     8     1</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; 15 schwartz    zanobetti       4</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate the text embed</span></span>
 <span><span class="va">embed_df</span> <span class="op">&lt;-</span> <span class="va">paper_df</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/calc-similarity.html">compute_text_embed</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">Processing batch 1/1</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 4.061170 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers output for texts (variable: 1/1, duration: 4.024554 secs).</span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">Completed layers aggregation for word_type_embeddings. </span></span></span>
 <span><span class="co"><span style="color: #00BB00;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.610729 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 3.146090 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.439704 secs).</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">Completed layers aggregation (variable 1/1, duration: 2.791564 secs).</span></span></span>
 <span><span class="co"><span style="color: #0000BB;">#&gt; </span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.159</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">Minutes from start:  0.174</span></span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">Estimated embedding time left = 0 minutes</span></span></span>
 <span><span class="co"># calculate decision similarity</span></span>
 <span><span class="op">(</span><span class="va">distance_decision_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/calc-similarity.html">calc_decision_similarity</a></span><span class="op">(</span><span class="va">paper_df</span>, embed <span class="op">=</span> <span class="va">embed_df</span><span class="op">)</span><span class="op">)</span></span>
@@ -253,13 +235,10 @@
 <span><span class="co">#&gt; 15 schwartz    zanobetti   0.143       0.857</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
+<h2 id="diagnostics-and-visualization">Diagnostics and visualization<a class="anchor" aria-label="anchor" href="#diagnostics-and-visualization"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/diagnose.html">diag_decision_ppp</a></span><span class="op">(</span><span class="va">distance_decision_df</span>, <span class="va">distance_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(paper1, paper2)`</span></span>
-<span><span class="co">#&gt; Storing counts in `nn`, as `n` already present in input</span></span>
-<span><span class="co">#&gt; Joining with `by = join_by(n)`</span></span>
 <span><span class="co">#&gt; # A tibble: 7 × 4</span></span>
 <span><span class="co">#&gt;   num_decision count   prop similarity</span></span>
 <span><span class="co">#&gt;          &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
@@ -283,6 +262,7 @@
 <span><span class="co">#&gt; 6 time_parameter_reason         to eliminate seasonal patterns… to minim…  0.779</span></span>
 <span><span class="co">#&gt; 7 humidity_temporal_decision    &lt;NA&gt;                            previous… NA    </span></span>
 <span><span class="co">#&gt; 8 temperature_temporal_decision &lt;NA&gt;                            previous… NA</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-5-1.png" width="100%"></p>
 </div>
 </div>
   </div>
