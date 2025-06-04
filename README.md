@@ -145,15 +145,15 @@ count_paper_pair_decisions(paper_df)
 embed_df <- paper_df |> compute_text_embed()
 #> [0;34mProcessing batch 1/1
 #> [0m
-#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 3.767509 secs).
+#> [0;32mCompleted layers output for texts (variable: 1/1, duration: 4.024554 secs).
 #> [0m
 #> [0;32mCompleted layers aggregation for word_type_embeddings. 
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.051446 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.146090 secs).
 #> [0m
-#> [0;34mCompleted layers aggregation (variable 1/1, duration: 3.005584 secs).
+#> [0;34mCompleted layers aggregation (variable 1/1, duration: 2.791564 secs).
 #> [0m
-#> [0;32mMinutes from start:  0.177[0m
+#> [0;32mMinutes from start:  0.174[0m
 #> [0;30mEstimated embedding time left = 0 minutes[0m
 # calculate decision similarity
 (distance_decision_df <- calc_decision_similarity(paper_df, embed = embed_df))
@@ -193,7 +193,7 @@ embed_df <- paper_df |> compute_text_embed()
 #> 15 schwartz    zanobetti   0.143       0.857
 ```
 
-## Diagnostics
+## Diagnostics and visualization
 
 ``` r
 diag_decision_ppp(distance_decision_df, distance_df)
@@ -221,3 +221,5 @@ view_pairs(paper_df, distance_decision_df, "braga", "zanobetti")
 #> 7 humidity_temporal_decision    <NA>                            previous… NA    
 #> 8 temperature_temporal_decision <NA>                            previous… NA
 ```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />

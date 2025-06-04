@@ -64,7 +64,7 @@ pivots all the columns, except paper and model, to the long format.</p>
 
 
 <dl><dt id="arg-df">df<a class="anchor" aria-label="anchor" href="#arg-df"></a></dt>
-<dd><p>A decision_tbl object created by `to_decision_tbl`</p></dd>
+<dd><p>A decision_tbl object created by `as_decision_tbl`</p></dd>
 
 </dl></div>
     <div id="value">
@@ -75,12 +75,39 @@ pivots all the columns, except paper and model, to the long format.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">raw_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"papers.csv"</span>, package <span class="op">=</span> <span class="st">"dossier"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu">to_decision_tbl</span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in to_decision_tbl(raw_df):</span> could not find function "to_decision_tbl"</span>
+<span class="r-in"><span><span class="va">tbl_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="class.html">as_decision_tbl</a></span><span class="op">(</span><span class="va">raw_df</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pivot_decision_tbl_wider</span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'tbl_df' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 30</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   paper       model                barometric_pressure_…¹ barometric_pressure_…²</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> braga       generalized additiv… LOESS                  to minimize Akaike's …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> katsouyanni generalized additiv… <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> ostro       Poisson regression   <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> peel        Poisson generalized… <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> schwartz    Poisson regression   <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> zanobetti   generalized additiv… <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ abbreviated names: ¹​barometric_pressure_parameter_method,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ²​barometric_pressure_parameter_reason</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 26 more variables: barometric_pressure_parameter_decision &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   barometric_pressure_spatial_reason &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   barometric_pressure_spatial_decision &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   humidity_parameter_method &lt;chr&gt;, humidity_parameter_reason &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   humidity_parameter_decision &lt;chr&gt;, humidity_spatial_reason &lt;chr&gt;, …</span></span>
 <span class="r-in"><span><span class="fu">pivot_decision_tbl_longer</span><span class="op">(</span><span class="va">tbl_df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'tbl_df' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 64 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    paper variable            type      model     parameter decision reason    id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> braga barometric_pressure parameter generali… smoothin… baromet… LOESS      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> braga barometric_pressure parameter generali… smoothin… baromet… to mi…     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> braga barometric_pressure spatial   generali… <span style="color: #BB0000;">NA</span>        baromet… to al…     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> braga barometric_pressure spatial   generali… <span style="color: #BB0000;">NA</span>        baromet… chose…     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> braga humidity            parameter generali… smoothin… humidit… LOESS      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> braga humidity            parameter generali… smoothin… humidit… to mi…     6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> braga humidity            spatial   generali… <span style="color: #BB0000;">NA</span>        humidit… to al…     7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> braga humidity            spatial   generali… <span style="color: #BB0000;">NA</span>        humidit… chose…     8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> braga temperature         parameter generali… smoothin… tempera… LOESS      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> braga temperature         parameter generali… smoothin… tempera… to mi…    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 54 more rows</span></span>
 </code></pre></div>
     </div>
   </div>

@@ -12,7 +12,7 @@ reference:
   desc:
   contents:
    - filter_papers
-   - summarize_num_decisions_pp
+   - count_paper_pair_decisions
 - title: "Calculate paper similarity and diagnostics"
   desc:
   contents:
