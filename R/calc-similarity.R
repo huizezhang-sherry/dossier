@@ -45,12 +45,19 @@ calc_decision_similarity <- function(df, embed = NULL, text_model = "bert-base-u
 
   res_df <- gen_paper_grid(df, "paper", new_names = new_names)
   pp_cols <- attr(res_df, "pp_cols")
-  res_df <- mapply(
-    function(x, y) decision_similarity_workhorse(x, y, long_df, embed, pp_cols),
-    res_df[[pp_cols[[1]]]], res_df[[pp_cols[[2]]]] , SIMPLIFY = FALSE
-    )
 
-  res <- dplyr::bind_rows(res_df)
+  res_out <- list()
+  pb <- cli::cli_progress_bar("Calculating", total = nrow(res_df))
+
+  for (i in seq_len(nrow(res_df))) {
+    res_out[[i]] <- decision_similarity_workhorse(
+      res_df[[pp_cols[[1]]]][i], res_df[[pp_cols[[2]]]][i],
+      long_df, embed, pp_cols
+    )
+    cli::cli_progress_update()
+  }
+
+  res <- dplyr::bind_rows(res_out)
   res
 
 }

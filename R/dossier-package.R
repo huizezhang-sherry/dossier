@@ -4,7 +4,7 @@
 #' @importFrom tidyr pivot_wider pivot_longer unnest
 #' @importFrom text textEmbed textSimilarity
 #' @importFrom purrr map2 map2_dfr
-#' @importFrom cli cli_abort
+#' @importFrom cli cli_abort cli_progress_update cli_progress_bar
 #' @importFrom dplyr filter mutate select rowwise ungroup summarise group_by arrange bind_cols across
 #' @importFrom rlang sym syms `:=`
 #' @keywords internal
