@@ -41,7 +41,7 @@ run_hclust <- function(df, method = "ave"){
 #' @export
 #' @rdname dim-red
 run_mds <- function(df, paper_cols = c("paper1", "paper2")){
-  cmod <- stats::cmdscale(to_dist_mtx(distance_df))
+  cmod <- stats::cmdscale(to_dist_mtx(df))
   tibble::tibble(paper = rownames(cmod), V1 = cmod[,1], V2 = cmod[,2])
 
 }
